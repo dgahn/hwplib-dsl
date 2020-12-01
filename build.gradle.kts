@@ -16,6 +16,8 @@ allprojects {
         implementation(LogLibs.kotlinLogging)
         implementation(LogLibs.logback)
 
+        implementation(HwpLibs.hwpLib)
+
         testImplementation(KotestLibs.runnerJunit5)
         testImplementation(KotestLibs.assertionsCore)
         testImplementation(KotestLibs.kotestProperty)
