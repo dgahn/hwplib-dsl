@@ -52,7 +52,7 @@ private fun style(
     colCount: Int,
     hwpFile: HWPFile,
     controlTable: ControlTable,
-    isLikeWord: Boolean = false,
+    isLikeWord: Boolean = true,
     isApplyLineSpace: Boolean = false,
     vertRelTo: VertRelTo = VertRelTo.Para,
     vertRelativeArrange: RelativeArrange = RelativeArrange.TopOrLeft,
@@ -71,10 +71,10 @@ private fun style(
     width: Double = 100.0,
     height: Double = 60.0,
     zOrder: Int = 1,
-    outterMarginLeft: Int = 0,
-    outterMarginRight: Int = 0,
-    outterMarginTop: Int = 0,
-    outterMarginBottom: Int = 0,
+    outterMarginLeft: Int = 10,
+    outterMarginRight: Int = 10,
+    outterMarginTop: Int = 100,
+    outterMarginBottom: Int = 100,
 ) {
     val ctrlHeader = controlTable.header
     ctrlHeader.property.isLikeWord = isLikeWord
@@ -111,7 +111,7 @@ private fun style(
     tableRecord.rightInnerMargin = 0
     tableRecord.topInnerMargin = 0
     tableRecord.bottomInnerMargin = 0
-    tableRecord.borderFillId = getBorderFillIDForTableOutterLine(hwpFile)
+    tableRecord.borderFillId = getBorderFillIDForTableOutterLine(hwpFile) // 얘 문제 아님
     tableRecord.cellCountOfRowList.add(rowCount)
     tableRecord.cellCountOfRowList.add(colCount)
 }
@@ -178,7 +178,9 @@ private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
 
 fun ControlTable.tr(
     block: Row.() -> Unit = {}
-): ControlTable = this.also { block.invoke(this.addNewRow()) }
+): ControlTable = this.also {
+    block.invoke(this.addNewRow())
+}
 
 fun Row.td(
     hwpFile: HWPFile,
@@ -195,7 +197,7 @@ fun Row.td(
 }
 
 private fun setListHeaderForCell(colIndex: Int, rowIndex: Int, cell: Cell, borderFillIDForCell: Int) {
-    val lh: ListHeaderForCell = cell.getListHeader()
+    val lh: ListHeaderForCell = cell.listHeader
     lh.paraCount = 1
     lh.property.textDirection = TextDirection.Horizontal
     lh.property.lineChange = LineChange.Normal
@@ -218,7 +220,7 @@ private fun setListHeaderForCell(colIndex: Int, rowIndex: Int, cell: Cell, borde
 }
 
 private fun setParagraphForCell(text: String, cell: Cell) {
-    val p: Paragraph = cell.getParagraphList().addNewParagraph()
+    val p: Paragraph = cell.paragraphList.addNewParagraph()
     setParaHeader(p)
     setParaText(p, text)
     setParaCharShape(p)
@@ -226,7 +228,7 @@ private fun setParagraphForCell(text: String, cell: Cell) {
 }
 
 private fun setParaHeader(p: Paragraph) {
-    val ph: ParaHeader = p.getHeader()
+    val ph: ParaHeader = p.header
     ph.isLastInList = true
     // 셀의 문단 모양을 이미 만들어진 문단 모양으로 사용함
     ph.paraShapeId = 1
@@ -245,7 +247,7 @@ private fun setParaHeader(p: Paragraph) {
 
 private fun setParaText(p: Paragraph, text2: String) {
     p.createText()
-    val pt: ParaText = p.getText()
+    val pt: ParaText = p.text
     try {
         pt.addString(text2)
     } catch (e: UnsupportedEncodingException) {
@@ -256,7 +258,7 @@ private fun setParaText(p: Paragraph, text2: String) {
 
 private fun setParaCharShape(p: Paragraph) {
     p.createCharShape()
-    val pcs: ParaCharShape = p.getCharShape()
+    val pcs: ParaCharShape = p.charShape
     // 셀의 글자 모양을 이미 만들어진 글자 모양으로 사용함
     pcs.addParaCharShape(0, 1)
 }

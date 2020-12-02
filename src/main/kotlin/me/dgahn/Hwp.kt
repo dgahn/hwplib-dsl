@@ -3,7 +3,6 @@ package me.dgahn
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlSectionDefine
 import kr.dogfoot.hwplib.writer.HWPWriter
-import java.awt.image.BufferedImage
 
 fun HWPFile.hwp(path: String, block: HWPFile.() -> Unit) = block.invoke(this).also {
     HWPWriter.toFile(this, path)
@@ -13,8 +12,8 @@ fun HWPFile.body(block: HWPFile.() -> Unit) = block.invoke(this)
 
 fun HWPFile.paperSize(paperSize: PaperSize) {
     val csd = this.bodyText.sectionList.first().getParagraph(0).controlList.first() as ControlSectionDefine
-    val size = when(paperSize) {
-        PaperSize.B5 ->  Size(51592, 72852)
+    val size = when (paperSize) {
+        PaperSize.B5 -> Size(51592, 72852)
         PaperSize.B4 -> Size(72852, 103180)
         PaperSize.A4 -> Size(59528, 84188)
         PaperSize.A3 -> Size(84188, 119052)
