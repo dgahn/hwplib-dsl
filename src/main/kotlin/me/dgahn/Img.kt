@@ -30,6 +30,22 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
+open class IMG(
+    initialAttributes : Map<String, String>,
+    override val consumer : TagConsumer<*>,
+    val src: BufferedImage,
+    val width: Int,
+    val height: Int
+    ) : HwpTag("img", consumer, initialAttributes, null, true, true)
+
+fun BODY.img(src: BufferedImage, width: Int, height: Int, block : IMG.() -> Unit = {}) = IMG(
+    consumer = consumer,
+    src = src,
+    width = width,
+    height = height,
+    initialAttributes = mutableMapOf()
+).visit(block)
+
 fun HWPFile.img(width: Int, height: Int, top: Int = 0, left: Int = 0, format: String = "png", img: BufferedImage) {
     val streamIndex = this.binData.embeddedBinaryDataList.size + 1
     addBinDataInBody(this, format, img, streamIndex)

@@ -1,7 +1,6 @@
 package me.dgahn
 
 import io.kotest.core.spec.style.FunSpec
-import me.dgahn.fixture.hwpFile
 import me.dgahn.fixture.imgFile
 import javax.imageio.ImageIO
 

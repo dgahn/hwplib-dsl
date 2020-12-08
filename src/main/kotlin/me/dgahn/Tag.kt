@@ -22,7 +22,7 @@ interface Tag {
     val consumer: TagConsumer<*>
     val namespace: String?
 
-//    val attributes: MutableMap<String, String>
+    val attributes: MutableMap<String, String>
 //    val attributesEntries: Collection<Map.Entry<String, String>>
 
     val inlineTag: Boolean
