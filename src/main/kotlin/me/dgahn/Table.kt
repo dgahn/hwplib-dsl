@@ -30,20 +30,39 @@ import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
 import java.io.UnsupportedEncodingException
 
+open class TABLE(
+    initialAttributes: Map<String, String>,
+    override val consumer: TagConsumer<*>,
+    val rowCount: Int,
+    val colCount: Int
+) : HwpTag("table", consumer, initialAttributes, null, true, true) {
+    lateinit var control : ControlTable
+
+    fun initControl(control : ControlTable) {
+        this.control = control
+    }
+}
+
+fun BODY.table(
+    rowCount: Int,
+    colCount: Int,
+    block: TABLE.() -> Unit = {}
+) = TABLE(mutableMapOf(), consumer, rowCount, colCount).visit(block)
 
 fun HWPFile.table(
     rowCount: Int,
     colCount: Int,
     block: ControlTable.() -> Unit = {}
-) {
+): ControlTable {
     val section = this.bodyText.sectionList.first()
     val paragraph = section.getParagraph(0)
 
     paragraph.text.addExtendCharForTable()
-    paragraph.addNewControl(ControlType.Table).let {
+    return paragraph.addNewControl(ControlType.Table).let {
         val controlTable = it as ControlTable
         block.invoke(controlTable)
         style(rowCount, colCount, this, it)
+        it
     }
 }
 
@@ -176,21 +195,31 @@ private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
     return hwpFile.docInfo.borderFillList.size
 }
 
-fun ControlTable.tr(
-    block: Row.() -> Unit = {}
-): ControlTable = this.also {
-    block.invoke(this.addNewRow())
-}
+open class TR(
+    initialAttributes: Map<String, String>,
+    override val consumer: TagConsumer<*>,
+    val row: Row
+) : HwpTag("tr", consumer, initialAttributes, null, true, true)
 
-fun Row.td(
+fun TABLE.tr(block: TR.() -> Unit = {}) = TR(mutableMapOf(), consumer, this.control.addNewRow()).visit(block)
+
+open class TD(
+    initialAttributes: Map<String, String>,
+    override val consumer: TagConsumer<*>,
+    val rowTag: Row,
+    val row: Int,
+    val col: Int,
+    val text: String
+) : HwpTag("tr", consumer, initialAttributes, null, true, true)
+
+fun TR.td(row: Int, col: Int, text: String, block: TD.() -> Unit = {}) = TD(mutableMapOf(), consumer, this.row, row, col, text).visit(block)
+
+fun TD.td(
     hwpFile: HWPFile,
-    row: Int,
-    col: Int,
-    text: String,
-    block: Row.() -> Unit = {}
+    block: TD.() -> Unit = {}
 ) {
     val borderFillIDForCell = getBorderFillIDForCell(hwpFile)
-    val cell = this.addNewCell()
+    val cell = this.rowTag.addNewCell()
     setListHeaderForCell(col, row, cell, borderFillIDForCell)
     setParagraphForCell(text, cell)
     block.invoke(this)

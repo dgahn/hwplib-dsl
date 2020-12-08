@@ -10,6 +10,11 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
     override fun onTagStart(tag: Tag) {
         when(tag) {
             is IMG -> hwpFile.img(width = tag.width, height = tag.height, img = tag.src)
+            is TABLE -> {
+                val control = hwpFile.table(tag.rowCount, tag.colCount)
+                tag.initControl(control)
+            }
+            is TD -> tag.td(hwpFile)
         }
     }
 

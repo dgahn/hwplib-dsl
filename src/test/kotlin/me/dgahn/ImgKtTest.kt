@@ -19,7 +19,7 @@ class ImgKtTest : FunSpec({
     }
 
     test("hwp에 이미지를 삽입할 수 있다.") {
-        val path = "/Volumes/SIA-NAS/workspace/dgahn/hwp/4-image-sample.hwp"
+        val path = "sample/4-image-sample.hwp"
         val expected = ImageIO.read(imgFile)
         hwpFile.createHwp().hwp {
             body {
