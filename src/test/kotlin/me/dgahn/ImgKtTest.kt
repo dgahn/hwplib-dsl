@@ -10,12 +10,12 @@ class ImgKtTest : FunSpec({
     test("hwp에 이미지를 삽입할 수 있다.") {
         val path = "sample/4-image-sample.hwp"
         val expected = ImageIO.read(imgFile)
-        createHwp().hwp(path = path) {
-            body {
-                paperSize(PaperSize.B4)
-                img(width = 120, height = 120, img = expected)
-            }
-        }
+//        createHwp().createHwp(path = path) {
+//            body {
+//                paperSize(PaperSize.B4)
+//                img(width = 120, height = 120, img = expected)
+//            }
+//        }
 
         val readHwp = readHwp(path)
         val actual = ImageIO.read(ByteArrayInputStream(readHwp.binData.embeddedBinaryDataList.first().data))
