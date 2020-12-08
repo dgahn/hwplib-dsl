@@ -29,30 +29,49 @@ import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
 import java.io.UnsupportedEncodingException
+import java.lang.RuntimeException
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.HWPCharNormal
+
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.HWPChar
+
+import java.util.ArrayList
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.HWPCharType
+
+
+
+
+
+
 
 open class TABLE(
     initialAttributes: Map<String, String>,
     override val consumer: TagConsumer<*>,
-    val rowCount: Int,
-    val colCount: Int
+    val rowSize: Int,
+    val colSize: Int,
+    var currentRow: Int = 0
 ) : HwpTag("table", consumer, initialAttributes, null, true, true) {
     lateinit var control : ControlTable
 
     fun initControl(control : ControlTable) {
         this.control = control
     }
+
+    fun countCurrentRow() = if(currentRow == rowSize) {
+        throw RuntimeException("No more rows can be added. max row size : $rowSize")
+    } else {
+        currentRow++
+    }
 }
 
 fun BODY.table(
-    rowCount: Int,
-    colCount: Int,
+    rowSize: Int,
+    colSize: Int,
     block: TABLE.() -> Unit = {}
-) = TABLE(mutableMapOf(), consumer, rowCount, colCount).visit(block)
+) = TABLE(mutableMapOf(), consumer, rowSize, colSize).visit(block)
 
 fun HWPFile.table(
     rowCount: Int,
-    colCount: Int,
-    block: ControlTable.() -> Unit = {}
+    colCount: Int
 ): ControlTable {
     val section = this.bodyText.sectionList.first()
     val paragraph = section.getParagraph(0)
@@ -60,9 +79,8 @@ fun HWPFile.table(
     paragraph.text.addExtendCharForTable()
     return paragraph.addNewControl(ControlType.Table).let {
         val controlTable = it as ControlTable
-        block.invoke(controlTable)
-        style(rowCount, colCount, this, it)
-        it
+        style(rowCount, colCount, this, controlTable)
+        controlTable
     }
 }
 
@@ -198,21 +216,44 @@ private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
 open class TR(
     initialAttributes: Map<String, String>,
     override val consumer: TagConsumer<*>,
-    val row: Row
-) : HwpTag("tr", consumer, initialAttributes, null, true, true)
+    val row: Row,
+    val position: Int,
+    val colSize: Int,
+    var currentCol: Int = 0
+) : HwpTag("tr", consumer, initialAttributes, null, true, true) {
+    fun countCurrentCol() = if(currentCol == colSize) {
+        throw RuntimeException("No more cols can be added. max col size : $colSize")
+    } else {
+        currentCol++
+    }
+}
 
-fun TABLE.tr(block: TR.() -> Unit = {}) = TR(mutableMapOf(), consumer, this.control.addNewRow()).visit(block)
+fun TABLE.tr(block: TR.() -> Unit = {}) = TR(mutableMapOf(), consumer, control.addNewRow(), countCurrentRow(), colSize).visit(block)
 
 open class TD(
     initialAttributes: Map<String, String>,
     override val consumer: TagConsumer<*>,
     val rowTag: Row,
     val row: Int,
-    val col: Int,
-    val text: String
-) : HwpTag("tr", consumer, initialAttributes, null, true, true)
+    val col: Int
+) : HwpTag("td", consumer, initialAttributes, null, true, true) {
 
-fun TR.td(row: Int, col: Int, text: String, block: TD.() -> Unit = {}) = TD(mutableMapOf(), consumer, this.row, row, col, text).visit(block)
+    lateinit var cell: Cell
+
+    override operator fun String.unaryPlus() {
+        text(this)
+    }
+
+    override fun text(s: String) {
+        setParagraphForCell(s, cell)
+    }
+
+    fun initCell(c: Cell) {
+        this.cell = c
+    }
+}
+
+fun TR.td(block: TD.() -> Unit = {}) = TD(mutableMapOf(), consumer, row, position, countCurrentCol()).visit(block)
 
 fun TD.td(
     hwpFile: HWPFile,
@@ -221,7 +262,8 @@ fun TD.td(
     val borderFillIDForCell = getBorderFillIDForCell(hwpFile)
     val cell = this.rowTag.addNewCell()
     setListHeaderForCell(col, row, cell, borderFillIDForCell)
-    setParagraphForCell(text, cell)
+    initCell(cell)
+//    initParagraph(p)
     block.invoke(this)
 }
 

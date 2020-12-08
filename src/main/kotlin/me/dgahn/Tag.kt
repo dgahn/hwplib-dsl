@@ -1,6 +1,7 @@
 package me.dgahn
 
 import kr.dogfoot.hwplib.`object`.HWPFile
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 
 interface TagConsumer<out R> {
 
@@ -36,7 +37,7 @@ interface Tag {
         text(this)
     }
 
-    fun text(s: String) {
+    open fun text(s: String) {
         consumer.onTagText(s)
     }
 
