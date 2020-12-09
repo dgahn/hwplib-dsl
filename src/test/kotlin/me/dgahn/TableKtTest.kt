@@ -18,7 +18,7 @@ class TableKtTest : FunSpec({
     }
 
     test("hwp에 테이블을 삽입할 수 있다.") {
-        val path = "/Volumes/SIA-NAS/workspace/dgahn/hwp/5-table-sample.hwp"
+        val path = "sample/5-table-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
                 paperSize(PaperSize.A4)

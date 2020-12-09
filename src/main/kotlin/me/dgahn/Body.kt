@@ -1,10 +1,14 @@
 package me.dgahn
 
-fun HWP.body(
-    content: String = "",
-    block: BODY.() -> Unit = {}
-): Unit = BODY(attributesMapOf("class", content), consumer, mutableMapOf()).visit(block)
+import kr.dogfoot.hwplib.`object`.HWPFile
 
-open class BODY(initialAttributes: Map<String, String>, override val consumer: TagConsumer<*>,
-                override val attributes: MutableMap<String, String>
-) : HwpTag("body", consumer, initialAttributes, null, false, false, mutableMapOf())
+fun HWP.body(block: BODY.() -> Unit = {}): Unit = BODY(consumer, BodyBuilder(consumer.hwpFile)).visit(block)
+
+open class BODY(
+    override val consumer: TagConsumer<*>,
+    override val builder: BodyBuilder
+) : Tag
+
+class BodyBuilder(override val hwpFile: HWPFile) : HwpTagBuilder {
+    override fun build() = Unit
+}

@@ -1,26 +1,22 @@
 package me.dgahn
 
 import kr.dogfoot.hwplib.`object`.HWPFile
-import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 import kr.dogfoot.hwplib.reader.HWPReader
 import kr.dogfoot.hwplib.writer.HWPWriter
 
 class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
 
     override fun onTagStart(tag: Tag) {
-        when(tag) {
-            is IMG -> hwpFile.img(width = tag.width, height = tag.height, img = tag.src)
-            is TABLE -> {
-                val control = hwpFile.table(tag.rowSize, tag.colSize)
-                tag.initControl(control)
-            }
-            is TD -> tag.td(hwpFile)
-        }
+        tag.builder.build()
+
     }
 
-    override fun onTagAttributeChange(tag: Tag, attribute: String, value: String?) = Unit
-
-    override fun onTagEnd(tag: Tag) = Unit
+    override fun initTagProperty(tag: Tag) {
+        when (tag) {
+            is TABLE -> tag.initControl(tag.builder.control)
+            is TD -> tag.initCell(tag.builder.cell)
+        }
+    }
 
     override fun onTagText(content: CharSequence) {
         val s = hwpFile.bodyText.sectionList.first()
@@ -28,9 +24,7 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
         firstParagraph.text.addString(content.toString())
     }
 
-    override fun onTagContentUnsafe(block: Unsafe.() -> Unit) = Unit
-
-    override fun onTagComment(content: CharSequence) = Unit
+    override fun onTagEnd(tag: Tag) = Unit
 
     override fun finalize(): O = hwpFile
 }
