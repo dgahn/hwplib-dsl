@@ -23,7 +23,6 @@ class ImgKtTest : FunSpec({
         val expected = ImageIO.read(imgFile)
         hwpFile.createHwp().hwp {
             body {
-                paperSize(PaperSize.B4)
                 img(width = 120, height = 120, src = expected)
                 + "\n위성 이미지입니다."
             }
@@ -41,7 +40,6 @@ class ImgKtTest : FunSpec({
         val expected = ImageIO.read(imgFile)
         hwpFile.createHwp().hwp {
             body {
-                paperSize(PaperSize.B4)
                 img(width = 120, height = 120, src = expected)
                 img(width = 120, height = 120, src = expected)
                 img(width = 120, height = 120, src = expected)

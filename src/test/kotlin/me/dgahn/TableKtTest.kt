@@ -21,7 +21,7 @@ class TableKtTest : FunSpec({
         val path = "sample/5-table-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
-                paperSize(PaperSize.A4)
+
                 table(rowSize = 2, colSize = 2) {
                     tr {
                         td {
@@ -52,7 +52,7 @@ class TableKtTest : FunSpec({
         shouldThrow<RuntimeException> {
             hwpFile.createHwp().hwp {
                 body {
-                    paperSize(PaperSize.A4)
+
                     table(rowSize = 2, colSize = 2) {
                         tr {
                             td()
@@ -77,7 +77,7 @@ class TableKtTest : FunSpec({
         shouldThrow<RuntimeException> {
             hwpFile.createHwp().hwp {
                 body {
-                    paperSize(PaperSize.A4)
+
                     table(rowSize = 2, colSize = 2) {
                         tr {
                             td()
@@ -100,7 +100,6 @@ class TableKtTest : FunSpec({
         val img = ImageIO.read(imgFile)
         hwpFile.createHwp().hwp {
             body {
-                paperSize(PaperSize.A4)
                 table(rowSize = 1, colSize = 1) {
                     tr {
                         td {

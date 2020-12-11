@@ -32,9 +32,11 @@ class HwpBuilderKtTest : FunSpec({
         val path = "sample/2-body-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
-                + "테스트1 글씨글씨\n"
-                + "테스트2 글씨글씨\n"
-                + "테스트3 글씨글씨"
+                section {
+                    +"테스트1 글씨글씨"
+                    +"테스트2 글씨글씨"
+                    +"테스트3 글씨글씨"
+                }
             }
         }.build(path)
 
@@ -46,12 +48,13 @@ class HwpBuilderKtTest : FunSpec({
     test("hwp의 사이즈를 결정할 수 있다.") {
         val path = "sample/3-size-sample.hwp"
         hwpFile.createHwp().hwp {
-            paperSize(PaperSize.B4)
             body {
-                + "이건 B4 사이즈의 한글 파일이야\n"
-                + "알겠어"
+                section {
+                    +"이건 B4 사이즈의 한글 파일이야"
+                    +"알겠어"
+                }
             }
-        }.build(path)
+        }.paperSize(PaperSize.B4).build(path)
 
         val readHwp = readHwp(path)
         val csd = readHwp.bodyText.sectionList.first().getParagraph(0).controlList.first() as ControlSectionDefine

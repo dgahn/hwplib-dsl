@@ -8,6 +8,7 @@ import kr.dogfoot.hwplib.writer.HWPWriter
 interface HwpTagConsumer<O : HWPFile> : TagConsumer<O> {
     val hwpFile: HWPFile
     var currentSection: Section
+    var isFirstSection: Boolean
 
     fun initTagProperty(tag: Tag)
 }
@@ -15,6 +16,8 @@ interface HwpTagConsumer<O : HWPFile> : TagConsumer<O> {
 class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O> {
 
     override var currentSection: Section = hwpFile.bodyText.sectionList.first()
+    override var isFirstSection: Boolean = true
+    private var isFirstPara: Boolean = true
 
     override fun onTagStart(tag: Tag) {
         tag.builder.build()
@@ -29,13 +32,28 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O>
     }
 
     override fun onTagText(content: CharSequence) {
-        val firstParagraph = currentSection.getParagraph(0)
-        firstParagraph.text.addString(content.toString())
+        if (isFirstSection && isFirstPara) {
+            val p = currentSection.getParagraph(0)
+            p.text.addString(content.toString())
+            isFirstPara = false
+        } else {
+            val p = currentSection.addNewParagraph()
+            setParaHeader(p)
+            setParaText(p, content.toString())
+            setParaCharShape(p)
+            setParaLineSeg(p)
+        }
     }
 
-    override fun onTagEnd(tag: Tag) = Unit
+    override fun onTagEnd(tag: Tag) {
+        if (tag is SECTION && isFirstSection) {
+            isFirstSection = false
+        }
+    }
 
     override fun finalize(): O = hwpFile
+
+
 }
 
 fun <O : HWPFile> O.createHwp(): HwpTagConsumer<O> = HwpStreamBuilder(this)
