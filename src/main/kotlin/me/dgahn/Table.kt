@@ -1,6 +1,7 @@
 package me.dgahn
 
 import kr.dogfoot.hwplib.`object`.HWPFile
+import kr.dogfoot.hwplib.`object`.bodytext.Section
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlTable
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlType
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.HeightCriterion
@@ -57,19 +58,24 @@ fun BODY.table(
     colSize: Int,
     block: TABLE.() -> Unit = {}
 ) {
-    val builder = TableBuilder(hwpFile = consumer.hwpFile, rowSize = rowSize, colSize = colSize)
+    val builder = TableBuilder(
+        hwpFile = consumer.hwpFile,
+        rowSize = rowSize,
+        colSize = colSize,
+        section = consumer.currentSection
+    )
     TABLE(consumer = consumer, builder = builder).visit(block)
 }
 
 class TableBuilder(
     override val hwpFile: HWPFile,
+    val section: Section,
     val rowSize: Int,
     val colSize: Int
 ) : HwpTagBuilder {
     lateinit var control: ControlTable
 
     override fun build() {
-        val section = hwpFile.bodyText.sectionList.first()
         val paragraph = section.getParagraph(0)
 
         paragraph.text.addExtendCharForTable()
@@ -233,7 +239,14 @@ fun TR.td(block: TD.() -> Unit = {}) {
 
 fun TD.img(src: BufferedImage, width: Int, height: Int, block: IMG.() -> Unit = {}) {
     val builder =
-        ImgBuilder(hwpFile = consumer.hwpFile, width = width, src = src, height = height, tdBuilder = this.builder)
+        ImgBuilder(
+            hwpFile = consumer.hwpFile,
+            width = width,
+            src = src,
+            height = height,
+            tdBuilder = this.builder,
+            section = consumer.currentSection
+        )
     IMG(consumer = consumer, builder = builder).visit(block)
 }
 

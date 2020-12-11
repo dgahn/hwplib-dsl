@@ -2,16 +2,19 @@ package me.dgahn
 
 interface TagConsumer<out R> {
     fun onTagStart(tag: Tag)
-    fun initTagProperty(tag: Tag)
     fun onTagText(content: CharSequence)
     fun onTagEnd(tag: Tag)
     fun onTagError(tag: Tag, exception: Throwable): Unit = throw exception
     fun finalize(): R
 }
 
+interface TagBuilder {
+    fun build()
+}
+
 interface Tag {
     val consumer: TagConsumer<*>
-    val builder: HwpTagBuilder
+    val builder: TagBuilder
 
     operator fun String.unaryPlus() {
         text(this)
@@ -28,7 +31,6 @@ interface Tag {
 
 fun <T : Tag> T.visit(block: T.() -> Unit) {
     consumer.onTagStart(this)
-    consumer.initTagProperty(this)
     try {
         this.block()
     } catch (err: Throwable) {

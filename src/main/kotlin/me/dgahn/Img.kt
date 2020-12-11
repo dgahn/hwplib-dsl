@@ -1,6 +1,7 @@
 package me.dgahn
 
 import kr.dogfoot.hwplib.`object`.HWPFile
+import kr.dogfoot.hwplib.`object`.bodytext.Section
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.HeightCriterion
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.HorzRelTo
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.ObjectNumberSort
@@ -37,11 +38,18 @@ open class IMG(
 
 fun BODY.img(src: BufferedImage, width: Int, height: Int, block: IMG.() -> Unit = {}) = IMG(
     consumer = consumer,
-    builder = ImgBuilder(hwpFile = consumer.hwpFile, src = src, width = width, height = height)
+    builder = ImgBuilder(
+        hwpFile = consumer.hwpFile,
+        section = consumer.currentSection,
+        src = src,
+        width = width,
+        height = height
+    )
 ).visit(block)
 
 class ImgBuilder(
     override val hwpFile: HWPFile,
+    val section: Section,
     val width: Int,
     val height: Int,
     val top: Int = 0,
@@ -53,23 +61,23 @@ class ImgBuilder(
 
     override fun build() {
         val streamIndex = hwpFile.binData.embeddedBinaryDataList.size + 1
-        addBinDataInBody(hwpFile, format, src, streamIndex)
-        addBinDataInDoc(hwpFile, format, streamIndex)
+        addBinDataInBody(streamIndex)
+        addBinDataInDoc(streamIndex)
 
         val binDataID = hwpFile.docInfo.binDataList.size
         if (tdBuilder == null) {
             val shapePosition = Rectangle(top, left, width, height)
-            addGsoControl(hwpFile, binDataID, shapePosition)
+            addGsoControl(binDataID, shapePosition)
         } else {
             tdBuilder.setImageFill(binDataID)
             tdBuilder.setParagraphForCell("", tdBuilder.cell)
         }
     }
 
-    private fun addBinDataInBody(hwpFile: HWPFile, format: String, img: BufferedImage, streamIndex: Int) {
+    private fun addBinDataInBody(streamIndex: Int) {
         val streamName = "Bin${String.format("%04X", streamIndex)}.$format"
         val imgBinary = ByteArrayOutputStream().let {
-            ImageIO.write(img, format, it)
+            ImageIO.write(src, format, it)
             it.flush()
             val imgBinary = it.toByteArray() // you have the data in byte array
             it.close()
@@ -79,7 +87,7 @@ class ImgBuilder(
         hwpFile.binData.addNewEmbeddedBinaryData(streamName, imgBinary, BinDataCompress.ByStroageDefault)
     }
 
-    private fun addBinDataInDoc(hwpFile: HWPFile, format: String, streamIndex: Int) {
+    private fun addBinDataInDoc(streamIndex: Int) {
         val bd = BinData()
         bd.property.type = BinDataType.Embedding
         bd.property.compress = BinDataCompress.ByStroageDefault
@@ -89,16 +97,15 @@ class ImgBuilder(
         hwpFile.docInfo.binDataList.add(bd)
     }
 
-    private fun addGsoControl(hwpFile: HWPFile, binDataID: Int, shapePosition: Rectangle) {
-        val rectangle: ControlRectangle = createRectangleControlAtFirstParagraph(hwpFile)
+    private fun addGsoControl(binDataID: Int, shapePosition: Rectangle) {
+        val rectangle: ControlRectangle = createRectangleControlAtFirstParagraph()
         setCtrlHeaderGso(rectangle, shapePosition)
         setShapeComponent(rectangle, shapePosition, binDataID)
         setShapeComponentRectangle(rectangle, shapePosition)
     }
 
-    private fun createRectangleControlAtFirstParagraph(hwpFile: HWPFile): ControlRectangle {
-        val firstSection = hwpFile.bodyText.sectionList.first()
-        val firstParagraph = firstSection.getParagraph(0)
+    private fun createRectangleControlAtFirstParagraph(): ControlRectangle {
+        val firstParagraph = section.getParagraph(0)
 
         // 문단에서 사각형 컨트롤의 위치를 표현하기 위한 확장 문자를 넣는다.
         firstParagraph.text.addExtendCharForGSO()

@@ -35,4 +35,24 @@ class ImgKtTest : FunSpec({
         actual.raster.toString() shouldBe expected.raster.toString()
         actual.alphaRaster.toString() shouldBe expected.alphaRaster.toString()
     }
+
+    test("hwp에 이미지를 여러개 삽입할 수 있다.") {
+        val path = "sample/4-image-sample-1.hwp"
+        val expected = ImageIO.read(imgFile)
+        hwpFile.createHwp().hwp {
+            body {
+                paperSize(PaperSize.B4)
+                img(width = 120, height = 120, src = expected)
+                img(width = 120, height = 120, src = expected)
+                img(width = 120, height = 120, src = expected)
+                + "\n위성 이미지입니다."
+            }
+        }.build(path)
+
+        val readHwp = readHwp(path)
+        val actual = ImageIO.read(ByteArrayInputStream(readHwp.binData.embeddedBinaryDataList.first().data))
+
+        actual.raster.toString() shouldBe expected.raster.toString()
+        actual.alphaRaster.toString() shouldBe expected.alphaRaster.toString()
+    }
 })
