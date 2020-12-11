@@ -10,8 +10,6 @@ interface TagConsumer<out R> {
     fun initTagProperty(tag: Tag)
     fun onTagText(content: CharSequence)
     fun onTagEnd(tag: Tag)
-
-    //    fun onTagContentEntity(entity: Entities)
     fun onTagError(tag: Tag, exception: Throwable): Unit = throw exception
     fun finalize(): R
 }

@@ -47,7 +47,8 @@ class ImgBuilder(
     val top: Int = 0,
     val left: Int = 0,
     val format: String = "png",
-    val src: BufferedImage
+    val src: BufferedImage,
+    val tdBuilder: TdBuilder? = null
 ) : HwpTagBuilder {
 
     override fun build() {
@@ -56,8 +57,13 @@ class ImgBuilder(
         addBinDataInDoc(hwpFile, format, streamIndex)
 
         val binDataID = hwpFile.docInfo.binDataList.size
-        val shapePosition = Rectangle(top, left, width, height)
-        addGsoControl(hwpFile, binDataID, shapePosition)
+        if (tdBuilder == null) {
+            val shapePosition = Rectangle(top, left, width, height)
+            addGsoControl(hwpFile, binDataID, shapePosition)
+        } else {
+            tdBuilder.setImageFill(binDataID)
+            tdBuilder.setParagraphForCell("", tdBuilder.cell)
+        }
     }
 
     private fun addBinDataInBody(hwpFile: HWPFile, format: String, img: BufferedImage, streamIndex: Int) {

@@ -3,7 +3,8 @@ package me.dgahn
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlSectionDefine
 
 fun HWP.paperSize(paperSize: PaperSize) {
-    val csd = this.consumer.hwpFile.bodyText.sectionList.first().getParagraph(0).controlList.first() as ControlSectionDefine
+    val csd =
+        this.consumer.hwpFile.bodyText.sectionList.first().getParagraph(0).controlList.first() as ControlSectionDefine
     val size = when (paperSize) {
         PaperSize.B5 -> Size(51592, 72852)
         PaperSize.B4 -> Size(72852, 103180)

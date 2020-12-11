@@ -25,21 +25,21 @@ class TableKtTest : FunSpec({
                 table(rowSize = 2, colSize = 2) {
                     tr {
                         td {
-                            + "이건 위 쪽"
-                            + "이건 위 쪽"
+                            +"이건 위 쪽"
+                            +"이건 위 쪽"
                         }
                         td {
-                            + "이건 위 쪽"
-                            + "이건 위 쪽"
+                            +"이건 위 쪽"
+                            +"이건 위 쪽"
                         }
                     }
                     tr {
                         td {
-                            + "이건 아래 쪽"
-                            + "이건 아래 쪽"
+                            +"이건 아래 쪽"
+                            +"이건 아래 쪽"
                         }
                         td {
-                            + "이건 아래 쪽"
+                            +"이건 아래 쪽"
                         }
                     }
                 }
@@ -95,25 +95,24 @@ class TableKtTest : FunSpec({
         }
     }
 
-    test("hwp에 테이블과 이미지를 삽입할 수 있다.") {
+    test("테이블 안에 이미지를 삽입할 수 있다.") {
         val path = "sample/6-table-img-sample.hwp"
         val img = ImageIO.read(imgFile)
-//        hwpFile.createHwp(path = path) {
-//            body {
-//                img(width = 120, height = 120, img = img)
-//                paperSize(PaperSize.B4)
-//                table(rowCount = 2, colCount = 2) {
-//                    tr {
-//                        td(hwpFile = hwpFile, row = 0, col = 0, "위")
-//                        td(hwpFile = hwpFile, row = 0, col = 1, "위")
-//                    }
-//                    tr {
-//                        td(hwpFile = hwpFile, row = 1, col = 0, "아래")
-//                        td(hwpFile = hwpFile, row = 1, col = 1, "아래")
-//                    }
-//                }
-//                img(width = 120, height = 120, img = img)
-//            }
-//        }
+        hwpFile.createHwp().hwp {
+            body {
+                paperSize(PaperSize.A4)
+                table(rowSize = 1, colSize = 1) {
+                    tr {
+                        td {
+                            img(width = 120, height = 120, src = img)
+                        }
+                    }
+                }
+
+            }
+        }.build(path)
+
+        val complete = readHwp(path)
+        complete.docInfo
     }
 })

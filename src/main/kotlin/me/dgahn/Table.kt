@@ -23,11 +23,14 @@ import kr.dogfoot.hwplib.`object`.bodytext.paragraph.charshape.ParaCharShape
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.header.ParaHeader
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.lineseg.ParaLineSeg
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.ParaText
+import kr.dogfoot.hwplib.`object`.docinfo.BorderFill
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BackSlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderThickness
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
+import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.ImageFillType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
+import java.awt.image.BufferedImage
 import java.io.UnsupportedEncodingException
 import java.lang.RuntimeException
 
@@ -228,6 +231,11 @@ fun TR.td(block: TD.() -> Unit = {}) {
     TD(consumer = consumer, builder = builder).visit(block)
 }
 
+fun TD.img(src: BufferedImage, width: Int, height: Int, block: IMG.() -> Unit = {}) {
+    val builder =
+        ImgBuilder(hwpFile = consumer.hwpFile, width = width, src = src, height = height, tdBuilder = this.builder)
+    IMG(consumer = consumer, builder = builder).visit(block)
+}
 
 class TdBuilder(
     override val hwpFile: HWPFile,
@@ -237,6 +245,7 @@ class TdBuilder(
 ) : HwpTagBuilder {
 
     lateinit var cell: Cell
+    lateinit var bf: BorderFill
 
     override fun build() {
         val borderFillIDForCell = getBorderFillIDForCell(hwpFile)
@@ -246,7 +255,7 @@ class TdBuilder(
     }
 
     private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
-        val bf = hwpFile.docInfo.addNewBorderFill()
+        bf = hwpFile.docInfo.addNewBorderFill()
         bf.property.is3DEffect = false
         bf.property.isShadowEffect = false
         bf.property.slashDiagonalShape = SlashDiagonalShape.None
@@ -273,6 +282,14 @@ class TdBuilder(
         pf.backColor.value = -1
         pf.patternColor.value = 0
         return hwpFile.docInfo.borderFillList.size
+    }
+
+    fun setImageFill(binDataID: Int) {
+        bf.fillInfo.type.setImageFill(true)
+        bf.fillInfo.createImageFill()
+        val imgF = bf.fillInfo.imageFill
+        imgF.imageFillType = ImageFillType.FitSize
+        imgF.pictureInfo.binItemID = binDataID
     }
 
     private fun setListHeaderForCell(colIndex: Int, rowIndex: Int, cell: Cell, borderFillIDForCell: Int) {
