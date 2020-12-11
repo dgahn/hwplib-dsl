@@ -74,6 +74,8 @@ class ImgBuilder(
         }
     }
 
+    override fun completed() = Unit
+
     private fun addBinDataInBody(streamIndex: Int) {
         val streamName = "Bin${String.format("%04X", streamIndex)}.$format"
         val imgBinary = ByteArrayOutputStream().let {

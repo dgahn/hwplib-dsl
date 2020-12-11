@@ -11,6 +11,12 @@ class HwpBuilder(
     override val hwpFile: HWPFile
 ) : HwpTagBuilder {
     override fun build() = Unit
+    override fun completed() {
+        if(hwpFile.bodyText.sectionList.size != 1) {
+            hwpFile.bodyText.sectionList.removeAt(0)
+        }
+    }
+
 }
 
 fun <T, C : HwpTagConsumer<T>> C.hwp(block: HWP.() -> Unit = {}): T =

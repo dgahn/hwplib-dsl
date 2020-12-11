@@ -44,22 +44,4 @@ class HwpBuilderKtTest : FunSpec({
 
         readHwp shouldNotBe null
     }
-
-    test("hwp의 사이즈를 결정할 수 있다.") {
-        val path = "sample/3-size-sample.hwp"
-        hwpFile.createHwp().hwp {
-            body {
-                section {
-                    +"이건 B4 사이즈의 한글 파일이야"
-                    +"알겠어"
-                }
-            }
-        }.paperSize(PaperSize.B4).build(path)
-
-        val readHwp = readHwp(path)
-        val csd = readHwp.bodyText.sectionList.first().getParagraph(0).controlList.first() as ControlSectionDefine
-
-        csd.pageDef.paperWidth shouldBe 72852
-        csd.pageDef.paperHeight shouldBe 103180
-    }
 })

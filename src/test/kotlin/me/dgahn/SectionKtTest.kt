@@ -35,8 +35,10 @@ class SectionKtTest: FunSpec({
             body {
                 section {
                     + "첫번째 Section 입니다."
+                    + "첫번째 Section 입니다."
                 }
                 section {
+                    + "두번째 Section 입니다."
                     + "두번째 Section 입니다."
                 }
             }

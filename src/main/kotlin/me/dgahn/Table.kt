@@ -85,6 +85,8 @@ class TableBuilder(
         }
     }
 
+    override fun completed() = Unit
+
     private fun style(
         rowCount: Int,
         colCount: Int,
@@ -211,6 +213,7 @@ fun TABLE.tr(block: TR.() -> Unit = {}) =
 
 class TrBuilder(override val hwpFile: HWPFile) : HwpTagBuilder {
     override fun build() = Unit
+    override fun completed() = Unit
 }
 
 open class TD(
@@ -266,6 +269,8 @@ class TdBuilder(
         setListHeaderForCell(col, row, cell, borderFillIDForCell)
         this.cell = cell
     }
+
+    override fun completed() = Unit
 
     private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
         bf = hwpFile.docInfo.addNewBorderFill()

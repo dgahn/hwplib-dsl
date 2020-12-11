@@ -10,6 +10,7 @@ interface TagConsumer<out R> {
 
 interface TagBuilder {
     fun build()
+    fun completed()
 }
 
 interface Tag {

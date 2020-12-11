@@ -9,7 +9,7 @@ open class SECTION(
 
 fun BODY.section(block: SECTION.() -> Unit = {}) {
     val bodyText = consumer.hwpFile.bodyText
-    if (!consumer.isFirstSection) consumer.currentSection = bodyText.addNewSection()
+    consumer.currentSection = bodyText.addNewSection()
 
     SECTION(
         consumer = consumer,
@@ -19,4 +19,5 @@ fun BODY.section(block: SECTION.() -> Unit = {}) {
 
 class SectionBuilder(override val hwpFile: HWPFile) : HwpTagBuilder {
     override fun build() = Unit
+    override fun completed() = Unit
 }

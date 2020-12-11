@@ -11,4 +11,5 @@ open class BODY(
 
 class BodyBuilder(override val hwpFile: HWPFile) : HwpTagBuilder {
     override fun build() = Unit
+    override fun completed() = Unit
 }
