@@ -205,5 +205,4 @@ class ImgBuilder(
         scr.x4 = 0
         scr.y4 = fromMM(shapePosition.height)
     }
-
 }

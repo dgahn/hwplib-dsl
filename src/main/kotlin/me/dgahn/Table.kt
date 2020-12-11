@@ -378,7 +378,6 @@ class TdBuilder(
     private fun ptToLineHeight(pt: Double): Int {
         return (pt * 100.0f).toInt()
     }
-
 }
 
 private fun mmToHwp(mm: Double): Long {

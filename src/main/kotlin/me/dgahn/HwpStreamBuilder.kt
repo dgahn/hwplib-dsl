@@ -8,7 +8,6 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
 
     override fun onTagStart(tag: Tag) {
         tag.builder.build()
-
     }
 
     override fun initTagProperty(tag: Tag) {

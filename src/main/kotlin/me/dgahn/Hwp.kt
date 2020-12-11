@@ -2,7 +2,6 @@ package me.dgahn
 
 import kr.dogfoot.hwplib.`object`.HWPFile
 
-
 open class HWP(
     override val consumer: TagConsumer<*>,
     override val builder: HwpBuilder

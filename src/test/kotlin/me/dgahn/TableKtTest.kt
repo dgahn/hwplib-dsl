@@ -108,7 +108,6 @@ class TableKtTest : FunSpec({
                         }
                     }
                 }
-
             }
         }.build(path)
 

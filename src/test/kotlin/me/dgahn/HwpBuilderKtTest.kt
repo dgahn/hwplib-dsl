@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldNotBe
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlSectionDefine
 
-
 class HwpBuilderKtTest : FunSpec({
 
     lateinit var sample: String

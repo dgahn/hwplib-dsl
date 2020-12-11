@@ -18,7 +18,7 @@ interface Tag {
     val consumer: TagConsumer<*>
     val builder: HwpTagBuilder
 
-    operator fun String.unaryPlus(): Unit {
+    operator fun String.unaryPlus() {
         text(this)
     }
 

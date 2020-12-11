@@ -7,5 +7,4 @@ interface HwpTagBuilder {
     val hwpFile: HWPFile
 
     fun build()
-
 }
