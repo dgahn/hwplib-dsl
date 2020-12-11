@@ -1,11 +1,6 @@
 package me.dgahn
 
-import kr.dogfoot.hwplib.`object`.HWPFile
-
 interface TagConsumer<out R> {
-
-    val hwpFile: HWPFile
-
     fun onTagStart(tag: Tag)
     fun initTagProperty(tag: Tag)
     fun onTagText(content: CharSequence)

@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException
 import java.lang.RuntimeException
 
 open class TABLE(
-    override val consumer: TagConsumer<*>,
+    override val consumer: HwpTagConsumer<*>,
     override val builder: TableBuilder,
     var currentRow: Int = 0
 ) : Tag {
@@ -180,7 +180,7 @@ class TableBuilder(
 }
 
 open class TR(
-    override val consumer: TagConsumer<*>,
+    override val consumer: HwpTagConsumer<*>,
     override val builder: TrBuilder,
     val row: Row,
     val position: Int,
@@ -208,7 +208,7 @@ class TrBuilder(override val hwpFile: HWPFile) : HwpTagBuilder {
 }
 
 open class TD(
-    override val consumer: TagConsumer<*>,
+    override val consumer: HwpTagConsumer<*>,
     override val builder: TdBuilder
 ) : Tag {
     lateinit var cell: Cell

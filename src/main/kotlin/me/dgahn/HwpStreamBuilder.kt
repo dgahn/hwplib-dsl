@@ -4,7 +4,11 @@ import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.reader.HWPReader
 import kr.dogfoot.hwplib.writer.HWPWriter
 
-class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
+interface HwpTagConsumer<O : HWPFile> : TagConsumer<O> {
+    val hwpFile: HWPFile
+}
+
+class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O> {
 
     override fun onTagStart(tag: Tag) {
         tag.builder.build()
@@ -28,7 +32,7 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : TagConsumer<O> {
     override fun finalize(): O = hwpFile
 }
 
-fun <O : HWPFile> O.createHwp(): TagConsumer<O> = HwpStreamBuilder(this)
+fun <O : HWPFile> O.createHwp(): HwpTagConsumer<O> = HwpStreamBuilder(this)
 
 fun HWPFile.build(path: String) = HWPWriter.toFile(this, path)
 

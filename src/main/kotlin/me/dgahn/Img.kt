@@ -31,7 +31,7 @@ import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
 open class IMG(
-    override val consumer: TagConsumer<*>,
+    override val consumer: HwpTagConsumer<*>,
     override val builder: ImgBuilder
 ) : Tag
 
