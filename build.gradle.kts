@@ -26,6 +26,7 @@ allprojects {
         implementation(LogLibs.logback)
 
         implementation(HwpLibs.hwpLib)
+        implementation(TimeLibs.jodaTime)
 
         testImplementation(KotestLibs.runnerJunit5)
         testImplementation(KotestLibs.assertionsCore)

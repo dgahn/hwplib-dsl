@@ -21,25 +21,26 @@ class TableKtTest : FunSpec({
         val path = "sample/5-table-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
-
-                table(rowSize = 2, colSize = 2) {
-                    tr {
-                        td {
-                            +"이건 위 쪽"
-                            +"이건 위 쪽"
+                section {
+                    table(rowSize = 2, colSize = 2) {
+                        tr {
+                            td {
+                                +"이건 위 쪽"
+                                +"이건 위 쪽"
+                            }
+                            td {
+                                +"이건 위 쪽"
+                                +"이건 위 쪽"
+                            }
                         }
-                        td {
-                            +"이건 위 쪽"
-                            +"이건 위 쪽"
-                        }
-                    }
-                    tr {
-                        td {
-                            +"이건 아래 쪽"
-                            +"이건 아래 쪽"
-                        }
-                        td {
-                            +"이건 아래 쪽"
+                        tr {
+                            td {
+                                +"이건 아래 쪽"
+                                +"이건 아래 쪽"
+                            }
+                            td {
+                                +"이건 아래 쪽"
+                            }
                         }
                     }
                 }
@@ -52,7 +53,6 @@ class TableKtTest : FunSpec({
         shouldThrow<RuntimeException> {
             hwpFile.createHwp().hwp {
                 body {
-
                     table(rowSize = 2, colSize = 2) {
                         tr {
                             td()
@@ -77,7 +77,6 @@ class TableKtTest : FunSpec({
         shouldThrow<RuntimeException> {
             hwpFile.createHwp().hwp {
                 body {
-
                     table(rowSize = 2, colSize = 2) {
                         tr {
                             td()
@@ -100,10 +99,12 @@ class TableKtTest : FunSpec({
         val img = ImageIO.read(imgFile)
         hwpFile.createHwp().hwp {
             body {
-                table(rowSize = 1, colSize = 1) {
-                    tr {
-                        td {
-                            img(width = 120, height = 120, src = img)
+                section {
+                    table(rowSize = 1, colSize = 1) {
+                        tr {
+                            td {
+                                img(width = 120, height = 120, src = img)
+                            }
                         }
                     }
                 }

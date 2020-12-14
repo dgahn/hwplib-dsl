@@ -4,29 +4,12 @@ import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.Section
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlTable
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlType
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.HeightCriterion
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.HorzRelTo
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.ObjectNumberSort
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.RelativeArrange
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.TextFlowMethod
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.TextHorzArrange
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.VertRelTo
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.WidthCriterion
-import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.sectiondefine.TextDirection
-import kr.dogfoot.hwplib.`object`.bodytext.control.gso.textbox.LineChange
-import kr.dogfoot.hwplib.`object`.bodytext.control.gso.textbox.TextVerticalAlignment
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.Cell
-import kr.dogfoot.hwplib.`object`.bodytext.control.table.DivideAtPageBoundary
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.ListHeaderForCell
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.Row
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 import kr.dogfoot.hwplib.`object`.docinfo.BorderFill
-import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BackSlashDiagonalShape
-import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderThickness
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
-import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
-import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.ImageFillType
-import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
 import java.awt.image.BufferedImage
 import java.lang.RuntimeException
 
@@ -51,13 +34,33 @@ open class TABLE(
 fun BODY.table(
     rowSize: Int,
     colSize: Int,
+    tableStyle: TableStyle = TableStyle(),
     block: TABLE.() -> Unit = {}
 ) {
     val builder = TableBuilder(
         hwpFile = consumer.hwpFile,
         rowSize = rowSize,
         colSize = colSize,
-        section = consumer.currentSection
+        section = consumer.currentSection,
+        ctrlHeaderStyle = tableStyle.ctrlHeaderStyle,
+        tableRecordStyle = tableStyle.tableRecordStyle
+    )
+    TABLE(consumer = consumer, builder = builder).visit(block)
+}
+
+fun SECTION.table(
+    rowSize: Int,
+    colSize: Int,
+    tableStyle: TableStyle = TableStyle(),
+    block: TABLE.() -> Unit = {}
+) {
+    val builder = TableBuilder(
+        hwpFile = consumer.hwpFile,
+        rowSize = rowSize,
+        colSize = colSize,
+        section = consumer.currentSection,
+        ctrlHeaderStyle = tableStyle.ctrlHeaderStyle,
+        tableRecordStyle = tableStyle.tableRecordStyle
     )
     TABLE(consumer = consumer, builder = builder).visit(block)
 }
@@ -66,12 +69,21 @@ class TableBuilder(
     override val hwpFile: HWPFile,
     val section: Section,
     val rowSize: Int,
-    val colSize: Int
+    val colSize: Int,
+    var ctrlHeaderStyle: CtrlHeaderStyle,
+    var tableRecordStyle: TableRecordStyle
 ) : HwpTagBuilder {
     lateinit var control: ControlTable
 
     override fun build() {
-        val paragraph = section.getParagraph(0)
+        val paragraph = runCatching { section.getParagraph(0) }.getOrElse {
+            section.addNewParagraph().apply {
+                setParaHeader(this)
+                setParaText(this, "")
+                setParaCharShape(this)
+                setParaLineSeg(this)
+            }
+        }
 
         paragraph.text.addExtendCharForTable()
         paragraph.addNewControl(ControlType.Table).apply {
@@ -86,98 +98,79 @@ class TableBuilder(
         rowCount: Int,
         colCount: Int,
         hwpFile: HWPFile,
-        controlTable: ControlTable,
-        isLikeWord: Boolean = true,
-        isApplyLineSpace: Boolean = false,
-        vertRelTo: VertRelTo = VertRelTo.Para,
-        vertRelativeArrange: RelativeArrange = RelativeArrange.TopOrLeft,
-        horzRelTo: HorzRelTo = HorzRelTo.Para,
-        horzRelativeArrange: RelativeArrange = RelativeArrange.TopOrLeft,
-        isVertRelToParaLimit: Boolean = false,
-        isAllowOverlap: Boolean = false,
-        widthCriterion: WidthCriterion = WidthCriterion.Absolute,
-        heightCriterion: HeightCriterion = HeightCriterion.Absolute,
-        isProtectSize: Boolean = false,
-        textFlowMethod: TextFlowMethod = TextFlowMethod.Tight,
-        textHorzArrange: TextHorzArrange = TextHorzArrange.BothSides,
-        objectNumberSort: ObjectNumberSort = ObjectNumberSort.Table,
-        offsetX: Double = 20.0,
-        offsetY: Double = 20.0,
-        width: Double = 100.0,
-        height: Double = 60.0,
-        zOrder: Int = 1,
-        outterMarginLeft: Int = 10,
-        outterMarginRight: Int = 10,
-        outterMarginTop: Int = 100,
-        outterMarginBottom: Int = 100,
+        controlTable: ControlTable
     ) {
         val ctrlHeader = controlTable.header
-        ctrlHeader.property.isLikeWord = isLikeWord
-        ctrlHeader.property.isApplyLineSpace = isApplyLineSpace
-        ctrlHeader.property.vertRelTo = vertRelTo
-        ctrlHeader.property.vertRelativeArrange = vertRelativeArrange
-        ctrlHeader.property.horzRelTo = horzRelTo
-        ctrlHeader.property.horzRelativeArrange = horzRelativeArrange
-        ctrlHeader.property.isVertRelToParaLimit = isVertRelToParaLimit
-        ctrlHeader.property.isAllowOverlap = isAllowOverlap
-        ctrlHeader.property.widthCriterion = widthCriterion
-        ctrlHeader.property.heightCriterion = heightCriterion
-        ctrlHeader.property.isProtectSize = isProtectSize
-        ctrlHeader.property.textFlowMethod = textFlowMethod
-        ctrlHeader.property.textHorzArrange = textHorzArrange
-        ctrlHeader.property.objectNumberSort = objectNumberSort
-        ctrlHeader.setxOffset(mmToHwp(offsetX))
-        ctrlHeader.setyOffset(mmToHwp(offsetY))
-        ctrlHeader.width = mmToHwp(width)
-        ctrlHeader.height = mmToHwp(height)
-        ctrlHeader.setzOrder(zOrder)
-        ctrlHeader.outterMarginLeft = outterMarginLeft
-        ctrlHeader.outterMarginRight = outterMarginRight
-        ctrlHeader.outterMarginTop = outterMarginTop
-        ctrlHeader.outterMarginBottom = outterMarginBottom
+        ctrlHeader.property.isLikeWord = ctrlHeaderStyle.isLikeWord
+        ctrlHeader.property.isApplyLineSpace = ctrlHeaderStyle.isApplyLineSpace
+        ctrlHeader.property.vertRelTo = ctrlHeaderStyle.vertRelTo
+        ctrlHeader.property.vertRelativeArrange = ctrlHeaderStyle.vertRelativeArrange
+        ctrlHeader.property.horzRelTo = ctrlHeaderStyle.horzRelTo
+        ctrlHeader.property.horzRelativeArrange = ctrlHeaderStyle.horzRelativeArrange
+        ctrlHeader.property.isVertRelToParaLimit = ctrlHeaderStyle.isVertRelToParaLimit
+        ctrlHeader.property.isAllowOverlap = ctrlHeaderStyle.isAllowOverlap
+        ctrlHeader.property.widthCriterion = ctrlHeaderStyle.widthCriterion
+        ctrlHeader.property.heightCriterion = ctrlHeaderStyle.heightCriterion
+        ctrlHeader.property.isProtectSize = ctrlHeaderStyle.isProtectSize
+        ctrlHeader.property.textFlowMethod = ctrlHeaderStyle.textFlowMethod
+        ctrlHeader.property.textHorzArrange = ctrlHeaderStyle.textHorzArrange
+        ctrlHeader.property.objectNumberSort = ctrlHeaderStyle.objectNumberSort
+        ctrlHeader.setxOffset(mmToHwp(ctrlHeaderStyle.offsetX))
+        ctrlHeader.setyOffset(mmToHwp(ctrlHeaderStyle.offsetY))
+        ctrlHeader.width = mmToHwp(ctrlHeaderStyle.width)
+        ctrlHeader.height = mmToHwp(ctrlHeaderStyle.height)
+        ctrlHeader.setzOrder(ctrlHeaderStyle.zOrder)
+        ctrlHeader.outterMarginLeft = ctrlHeaderStyle.outterMarginLeft
+        ctrlHeader.outterMarginRight = ctrlHeaderStyle.outterMarginRight
+        ctrlHeader.outterMarginTop = ctrlHeaderStyle.outterMarginTop
+        ctrlHeader.outterMarginBottom = ctrlHeaderStyle.outterMarginBottom
 
         val tableRecord = controlTable.table
-        tableRecord.property.divideAtPageBoundary = DivideAtPageBoundary.DivideByCell
-        tableRecord.property.isAutoRepeatTitleRow = false
+        tableRecord.property.divideAtPageBoundary = tableRecordStyle.divideAtPageBoundary
+        tableRecord.property.isAutoRepeatTitleRow = tableRecordStyle.isAutoRepeatTitleRow
+        tableRecord.cellSpacing = tableRecordStyle.cellSpacing
+        tableRecord.leftInnerMargin = tableRecordStyle.leftInnerMargin
+        tableRecord.rightInnerMargin = tableRecordStyle.rightInnerMargin
+        tableRecord.topInnerMargin = tableRecordStyle.topInnerMargin
+        tableRecord.bottomInnerMargin = tableRecordStyle.bottomInnerMargin
         tableRecord.rowCount = rowCount
         tableRecord.columnCount = colCount
-        tableRecord.cellSpacing = 0
-        tableRecord.leftInnerMargin = 0
-        tableRecord.rightInnerMargin = 0
-        tableRecord.topInnerMargin = 0
-        tableRecord.bottomInnerMargin = 0
-        tableRecord.borderFillId = getBorderFillIDForTableOutterLine(hwpFile) // 얘 문제 아님
         tableRecord.cellCountOfRowList.add(rowCount)
         tableRecord.cellCountOfRowList.add(colCount)
+        tableRecord.borderFillId = getBorderFillIDForTableOutterLine(hwpFile)
     }
 
-    private fun getBorderFillIDForTableOutterLine(hwpFile: HWPFile): Int {
+    private fun getBorderFillIDForTableOutterLine(
+        hwpFile: HWPFile,
+        borderFillStyle: BorderFillStyle = BorderFillStyle(),
+        patternFillStyle: PatternFillStyle = PatternFillStyle()
+    ): Int {
         val bf = hwpFile.docInfo.addNewBorderFill()
-        bf.property.is3DEffect = false
-        bf.property.isShadowEffect = false
-        bf.property.slashDiagonalShape = SlashDiagonalShape.None
-        bf.property.backSlashDiagonalShape = BackSlashDiagonalShape.None
-        bf.leftBorder.type = BorderType.None
-        bf.leftBorder.thickness = BorderThickness.MM0_5
-        bf.leftBorder.color.value = 0x0
-        bf.rightBorder.type = BorderType.None
-        bf.rightBorder.thickness = BorderThickness.MM0_5
-        bf.rightBorder.color.value = 0x0
-        bf.topBorder.type = BorderType.None
-        bf.topBorder.thickness = BorderThickness.MM0_5
-        bf.topBorder.color.value = 0x0
-        bf.bottomBorder.type = BorderType.None
-        bf.bottomBorder.thickness = BorderThickness.MM0_5
-        bf.bottomBorder.color.value = 0x0
-        bf.diagonalSort = BorderType.None
-        bf.diagonalThickness = BorderThickness.MM0_5
-        bf.diagonalColor.value = 0x0
-        bf.fillInfo.type.setPatternFill(true)
+        bf.property.is3DEffect = borderFillStyle.is3DEffect
+        bf.property.isShadowEffect = borderFillStyle.isShadowEffect
+        bf.property.slashDiagonalShape = borderFillStyle.slashDiagonalShape
+        bf.property.backSlashDiagonalShape = borderFillStyle.backSlashDiagonalShape
+        bf.leftBorder.type = borderFillStyle.leftBorderType
+        bf.leftBorder.thickness = borderFillStyle.leftBorderThickness
+        bf.leftBorder.color.value = borderFillStyle.leftBorderColorValue
+        bf.rightBorder.type = borderFillStyle.rightBorderType
+        bf.rightBorder.thickness = borderFillStyle.rightBorderThickness
+        bf.rightBorder.color.value = borderFillStyle.rightBorderColorValue
+        bf.topBorder.type = borderFillStyle.topBorderType
+        bf.topBorder.thickness = borderFillStyle.topBorderThickness
+        bf.topBorder.color.value = borderFillStyle.topBorderColorValue
+        bf.bottomBorder.type = borderFillStyle.bottomBorderType
+        bf.bottomBorder.thickness = borderFillStyle.bottomBorderThickness
+        bf.bottomBorder.color.value = borderFillStyle.bottomBorderColorValue
+        bf.diagonalSort = borderFillStyle.diagonalSort
+        bf.diagonalThickness = borderFillStyle.diagonalThickness
+        bf.diagonalColor.value = borderFillStyle.diagonalColorValue
+        bf.fillInfo.type.setPatternFill(borderFillStyle.isFillInfoTypePatternFill)
         bf.fillInfo.createPatternFill()
         val pf = bf.fillInfo.patternFill
-        pf.patternType = PatternType.None
-        pf.backColor.value = -1
-        pf.patternColor.value = 0
+        pf.patternType = patternFillStyle.patternType
+        pf.backColor.value = patternFillStyle.backColorValue
+        pf.patternColor.value = patternFillStyle.patternColorValue
         return hwpFile.docInfo.borderFillList.size
     }
 }
@@ -230,8 +223,26 @@ open class TD(
     }
 }
 
-fun TR.td(block: TD.() -> Unit = {}) {
-    val builder = TdBuilder(consumer.hwpFile, row, position, countCurrentCol())
+fun TR.td(
+    tdStyle: TdStyle = TdStyle(
+        borderFileStyle = BorderFillStyle(
+            leftBorderType = BorderType.Solid,
+            rightBorderType = BorderType.Solid,
+            topBorderType = BorderType.Solid,
+            bottomBorderType = BorderType.Solid,
+        )
+    ),
+    block: TD.() -> Unit = {}
+) {
+    val builder = TdBuilder(
+        hwpFile = consumer.hwpFile,
+        rowTag = row,
+        row = position,
+        col = countCurrentCol(),
+        borderFillStyle = tdStyle.borderFileStyle,
+        patternFillStyle = tdStyle.patternFillStyle,
+        listHeaderStyle = tdStyle.listHeaderStyle
+    )
     TD(consumer = consumer, builder = builder).visit(block)
 }
 
@@ -252,14 +263,22 @@ class TdBuilder(
     override val hwpFile: HWPFile,
     val rowTag: Row,
     val row: Int,
-    val col: Int
+    val col: Int,
+    var borderFillStyle: BorderFillStyle = BorderFillStyle(
+        leftBorderType = BorderType.Solid,
+        rightBorderType = BorderType.Solid,
+        topBorderType = BorderType.Solid,
+        bottomBorderType = BorderType.Solid,
+    ),
+    var patternFillStyle: PatternFillStyle = PatternFillStyle(),
+    var listHeaderStyle: ListHeaderStyle = ListHeaderStyle()
 ) : HwpTagBuilder {
 
     lateinit var cell: Cell
     lateinit var bf: BorderFill
 
     override fun build() {
-        val borderFillIDForCell = getBorderFillIDForCell(hwpFile)
+        val borderFillIDForCell = getBorderFillIDForCell(hwpFile = hwpFile)
         val cell = this.rowTag.addNewCell()
         setListHeaderForCell(col, row, cell, borderFillIDForCell)
         this.cell = cell
@@ -267,65 +286,75 @@ class TdBuilder(
 
     override fun completed() = Unit
 
-    private fun getBorderFillIDForCell(hwpFile: HWPFile): Int {
+    private fun getBorderFillIDForCell(
+        hwpFile: HWPFile
+    ): Int {
         bf = hwpFile.docInfo.addNewBorderFill()
-        bf.property.is3DEffect = false
-        bf.property.isShadowEffect = false
-        bf.property.slashDiagonalShape = SlashDiagonalShape.None
-        bf.property.backSlashDiagonalShape = BackSlashDiagonalShape.None
-        bf.leftBorder.type = BorderType.Solid
-        bf.leftBorder.thickness = BorderThickness.MM0_5
-        bf.leftBorder.color.value = 0x0
-        bf.rightBorder.type = BorderType.Solid
-        bf.rightBorder.thickness = BorderThickness.MM0_5
-        bf.rightBorder.color.value = 0x0
-        bf.topBorder.type = BorderType.Solid
-        bf.topBorder.thickness = BorderThickness.MM0_5
-        bf.topBorder.color.value = 0x0
-        bf.bottomBorder.type = BorderType.Solid
-        bf.bottomBorder.thickness = BorderThickness.MM0_5
-        bf.bottomBorder.color.value = 0x0
-        bf.diagonalSort = BorderType.None
-        bf.diagonalThickness = BorderThickness.MM0_5
-        bf.diagonalColor.value = 0x0
-        bf.fillInfo.type.setPatternFill(true)
+        bf.property.is3DEffect = borderFillStyle.is3DEffect
+        bf.property.isShadowEffect = borderFillStyle.isShadowEffect
+        bf.property.slashDiagonalShape = borderFillStyle.slashDiagonalShape
+        bf.property.backSlashDiagonalShape = borderFillStyle.backSlashDiagonalShape
+        bf.leftBorder.type = borderFillStyle.leftBorderType
+        bf.leftBorder.thickness = borderFillStyle.leftBorderThickness
+        bf.leftBorder.color.value = borderFillStyle.leftBorderColorValue
+        bf.rightBorder.type = borderFillStyle.rightBorderType
+        bf.rightBorder.thickness = borderFillStyle.rightBorderThickness
+        bf.rightBorder.color.value = borderFillStyle.rightBorderColorValue
+        bf.topBorder.type = borderFillStyle.topBorderType
+        bf.topBorder.thickness = borderFillStyle.topBorderThickness
+        bf.topBorder.color.value = borderFillStyle.topBorderColorValue
+        bf.bottomBorder.type = borderFillStyle.bottomBorderType
+        bf.bottomBorder.thickness = borderFillStyle.bottomBorderThickness
+        bf.bottomBorder.color.value = borderFillStyle.bottomBorderColorValue
+        bf.diagonalSort = borderFillStyle.diagonalSort
+        bf.diagonalThickness = borderFillStyle.diagonalThickness
+        bf.diagonalColor.value = borderFillStyle.diagonalColorValue
+        bf.fillInfo.type.setPatternFill(borderFillStyle.isFillInfoTypePatternFill)
         bf.fillInfo.createPatternFill()
         val pf = bf.fillInfo.patternFill
-        pf.patternType = PatternType.None
-        pf.backColor.value = -1
-        pf.patternColor.value = 0
+        pf.patternType = patternFillStyle.patternType
+        pf.backColor.value = patternFillStyle.backColorValue
+        pf.patternColor.value = patternFillStyle.patternColorValue
         return hwpFile.docInfo.borderFillList.size
     }
 
-    fun setImageFill(binDataID: Int) {
+    fun setImageFill(
+        binDataID: Int,
+        patternFillStyle: PatternFillStyle = PatternFillStyle()
+    ) {
         bf.fillInfo.type.setImageFill(true)
         bf.fillInfo.createImageFill()
         val imgF = bf.fillInfo.imageFill
-        imgF.imageFillType = ImageFillType.FitSize
+        imgF.imageFillType = patternFillStyle.imageFillTypeFitSize
         imgF.pictureInfo.binItemID = binDataID
     }
 
-    private fun setListHeaderForCell(colIndex: Int, rowIndex: Int, cell: Cell, borderFillIDForCell: Int) {
+    private fun setListHeaderForCell(
+        colIndex: Int,
+        rowIndex: Int,
+        cell: Cell,
+        borderFillIDForCell: Int
+    ) {
         val lh: ListHeaderForCell = cell.listHeader
-        lh.paraCount = 1
-        lh.property.textDirection = TextDirection.Horizontal
-        lh.property.lineChange = LineChange.Normal
-        lh.property.textVerticalAlignment = TextVerticalAlignment.Center
-        lh.property.isProtectCell = false
-        lh.property.isEditableAtFormMode = false
+        lh.paraCount = listHeaderStyle.paraCount
+        lh.property.textDirection = listHeaderStyle.textDirection
+        lh.property.lineChange = listHeaderStyle.lineChange
+        lh.property.textVerticalAlignment = listHeaderStyle.textVerticalAlignment
+        lh.property.isProtectCell = listHeaderStyle.isProtectCell
+        lh.property.isEditableAtFormMode = listHeaderStyle.isEditableAtFormMode
         lh.colIndex = colIndex
         lh.rowIndex = rowIndex
-        lh.colSpan = 1
-        lh.rowSpan = 1
-        lh.width = mmToHwp(50.0)
-        lh.height = mmToHwp(30.0)
-        lh.leftMargin = 0
-        lh.rightMargin = 0
-        lh.topMargin = 0
-        lh.bottomMargin = 0
+        lh.colSpan = listHeaderStyle.colSpan
+        lh.rowSpan = listHeaderStyle.rowSpan
+        lh.width = mmToHwp(listHeaderStyle.width)
+        lh.height = mmToHwp(listHeaderStyle.height)
+        lh.leftMargin = listHeaderStyle.leftMargin
+        lh.rightMargin = listHeaderStyle.rightMargin
+        lh.topMargin = listHeaderStyle.topMargin
+        lh.bottomMargin = listHeaderStyle.bottomMargin
         lh.borderFillId = borderFillIDForCell
-        lh.textWidth = mmToHwp(50.0)
-        lh.fieldName = ""
+        lh.textWidth = mmToHwp(listHeaderStyle.textWidth)
+        lh.fieldName = listHeaderStyle.fieldName
     }
 
     fun setParagraphForCell(text: String, cell: Cell) {
