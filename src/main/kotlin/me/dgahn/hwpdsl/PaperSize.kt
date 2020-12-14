@@ -1,4 +1,4 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlColumnDefine

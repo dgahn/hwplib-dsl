@@ -1,4 +1,4 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

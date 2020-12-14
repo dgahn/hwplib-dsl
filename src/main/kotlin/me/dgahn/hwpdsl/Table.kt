@@ -1,4 +1,4 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.Section
@@ -20,10 +20,6 @@ import kr.dogfoot.hwplib.`object`.bodytext.control.table.DivideAtPageBoundary
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.ListHeaderForCell
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.Row
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
-import kr.dogfoot.hwplib.`object`.bodytext.paragraph.charshape.ParaCharShape
-import kr.dogfoot.hwplib.`object`.bodytext.paragraph.header.ParaHeader
-import kr.dogfoot.hwplib.`object`.bodytext.paragraph.lineseg.ParaLineSeg
-import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.ParaText
 import kr.dogfoot.hwplib.`object`.docinfo.BorderFill
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BackSlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderThickness
@@ -32,7 +28,6 @@ import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.ImageFillType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
 import java.awt.image.BufferedImage
-import java.io.UnsupportedEncodingException
 import java.lang.RuntimeException
 
 open class TABLE(

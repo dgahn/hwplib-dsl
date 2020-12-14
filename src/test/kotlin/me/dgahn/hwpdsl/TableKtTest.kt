@@ -1,4 +1,4 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec

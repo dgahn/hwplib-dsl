@@ -1,10 +1,8 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kr.dogfoot.hwplib.`object`.HWPFile
-import kr.dogfoot.hwplib.`object`.bodytext.control.ControlSectionDefine
 
 class HwpBuilderKtTest : FunSpec({
 

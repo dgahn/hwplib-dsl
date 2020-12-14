@@ -1,4 +1,4 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 interface TagConsumer<out R> {
     fun onTagStart(tag: Tag)

@@ -1,8 +1,7 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import io.kotest.core.spec.style.FunSpec
 import kr.dogfoot.hwplib.`object`.HWPFile
-import kr.dogfoot.hwplib.tool.blankfilemaker.BlankFileMaker
 
 class SectionKtTest: FunSpec({
     lateinit var sample: String

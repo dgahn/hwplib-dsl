@@ -1,12 +1,9 @@
-package me.dgahn
+package me.dgahn.hwpdsl
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.control.ControlSectionDefine
-import me.dgahn.fixture.imgFile
-import java.io.ByteArrayInputStream
-import javax.imageio.ImageIO
 
 class PaperSizeKtTest : FunSpec({
     lateinit var sample: String
@@ -19,7 +16,7 @@ class PaperSizeKtTest : FunSpec({
         hwpFile = readHwp(samplePath)
     }
 
-    test("hwp의 종이 사이즈를 수정할 수 있다.") {
+    test("hwp의 종이 사이즈를 수정할 수 있다.").config(enabled = false) {
         val path = "sample/3-size-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
