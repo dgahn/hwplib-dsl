@@ -82,10 +82,7 @@ class TableBuilder(
     override fun build() {
         val paragraph = runCatching { section.getParagraph(0) }.getOrElse {
             section.addNewParagraph().apply {
-                setParaHeader(this)
-                setParaText(this, "")
-                setParaCharShape(hwpFile, this, paragraphStyle)
-                setParaLineSeg(this)
+                setParagraph(hwpFile = hwpFile, content = "", paragraphStyle = paragraphStyle)
             }
         }
 
@@ -366,11 +363,9 @@ class TdBuilder(
     }
 
     fun setParagraphForCell(text: String, cell: Cell) {
-        val p: Paragraph = cell.paragraphList.addNewParagraph()
-        setParaHeader(p)
-        setParaText(p, text)
-        setParaCharShape(hwpFile, p, paragraphStyle)
-        setParaLineSeg(p)
+        cell.paragraphList.addNewParagraph().apply {
+            setParagraph(hwpFile = hwpFile, content = text, paragraphStyle = paragraphStyle)
+        }
     }
 }
 

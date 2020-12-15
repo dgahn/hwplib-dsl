@@ -31,10 +31,7 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O>
 
     override fun onTagText(content: CharSequence) {
         currentSection.addNewParagraph().apply {
-            setParaHeader(this)
-            setParaText(this, content.toString())
-            setParaCharShape(hwpFile, this, paragraphStyle)
-            setParaLineSeg(this)
+            setParagraph(hwpFile = hwpFile, content = content.toString(), paragraphStyle = paragraphStyle)
         }
     }
 

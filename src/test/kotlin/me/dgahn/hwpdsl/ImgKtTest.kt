@@ -24,7 +24,7 @@ class ImgKtTest : FunSpec({
         hwpFile.createHwp().hwp {
             body {
                 img(width = 120, height = 120, src = expected)
-                + "\n위성 이미지입니다."
+                +"위성 이미지입니다."
             }
         }.build(path)
 
@@ -43,7 +43,7 @@ class ImgKtTest : FunSpec({
                 img(width = 120, height = 120, src = expected)
                 img(width = 120, height = 120, src = expected)
                 img(width = 120, height = 120, src = expected)
-                + "\n위성 이미지입니다."
+                +"\n위성 이미지입니다."
             }
         }.build(path)
 

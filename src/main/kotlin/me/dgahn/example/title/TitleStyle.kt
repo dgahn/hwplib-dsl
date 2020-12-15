@@ -1,5 +1,7 @@
 package me.dgahn.example.title
 
+import kr.dogfoot.hwplib.`object`.docinfo.numbering.ParagraphAlignment
+import kr.dogfoot.hwplib.`object`.docinfo.parashape.Alignment
 import me.dgahn.hwpdsl.BorderFillStyle
 import me.dgahn.hwpdsl.CtrlHeaderStyle
 import me.dgahn.hwpdsl.ListHeaderStyle
@@ -52,6 +54,7 @@ internal val timeTdStyle = TdStyle(
         height = tdHeight
     ),
     paragraphStyle = ParagraphStyle(
-        charColorValue = charColorValue
+        charColorValue = charColorValue,
+        paragraphAlignment = Alignment.Right
     )
 )

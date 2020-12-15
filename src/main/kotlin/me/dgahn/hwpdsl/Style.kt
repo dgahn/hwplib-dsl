@@ -9,19 +9,32 @@ import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.TextHorzArrang
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.VertRelTo
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.WidthCriterion
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.sectiondefine.TextDirection
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineArrowShape
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineArrowSize
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineEndShape
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineType
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.OutlineStyle
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.shadowinfo.ShadowType
 import kr.dogfoot.hwplib.`object`.bodytext.control.gso.textbox.LineChange
 import kr.dogfoot.hwplib.`object`.bodytext.control.gso.textbox.TextVerticalAlignment
 import kr.dogfoot.hwplib.`object`.bodytext.control.table.DivideAtPageBoundary
+import kr.dogfoot.hwplib.`object`.docinfo.bindata.BinDataCompress
+import kr.dogfoot.hwplib.`object`.docinfo.bindata.BinDataState
+import kr.dogfoot.hwplib.`object`.docinfo.bindata.BinDataType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BackSlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderThickness
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.ImageFillType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
+import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PictureEffect
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.EmphasisSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.OutterLineSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.ShadowSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.UnderLineSort
+import kr.dogfoot.hwplib.`object`.docinfo.numbering.ParagraphAlignment
+import kr.dogfoot.hwplib.`object`.docinfo.parashape.Alignment
+import kotlin.random.Random
 
 data class CtrlHeaderStyle(
     val isLikeWord: Boolean = true,
@@ -124,8 +137,6 @@ data class TdStyle(
 
 data class ParagraphStyle(
     val paragraphStartPos: Int = 0,
-    val boldStartPos: Int = 0,
-    val boldEndPos: Int = 0,
     val ratios: Short = 100.toShort(),
     val charSpaces: Byte = 0.toByte(),
     val relativeSizes: Short = 100.toShort(),
@@ -155,5 +166,98 @@ data class ParagraphStyle(
     val fontName: String = "바탕",
     val hasBaseFont: Boolean = false,
     val hasFontInfo: Boolean = false,
-    val hasSubstituteFont: Boolean = false
+    val hasSubstituteFont: Boolean = false,
+    val paragraphAlignment: Alignment = Alignment.Left
+)
+
+data class BinDataStyle(
+    val type: BinDataType = BinDataType.Embedding,
+    val compress: BinDataCompress = BinDataCompress.ByStroageDefault,
+    val state: BinDataState = BinDataState.NotAcceess,
+    val format: String = "png",
+)
+
+data class CtrlHeaderGsoStyle(
+    val isLikeWord: Boolean = true,
+    val isApplyLineSpace: Boolean = false,
+    val vertRelTo: VertRelTo = VertRelTo.Para,
+    val vertRelativeArrange: RelativeArrange = RelativeArrange.TopOrLeft,
+    val horzRelTo: HorzRelTo = HorzRelTo.Para,
+    val horzRelativeArrange: RelativeArrange = RelativeArrange.TopOrLeft,
+    val isVertRelToParaLimit: Boolean = true,
+    val isAllowOverlap: Boolean = true,
+    val widthCriterion: WidthCriterion = WidthCriterion.Absolute,
+    val heightCriterion: HeightCriterion = HeightCriterion.Absolute,
+    val isProtectSize: Boolean = false,
+    val textFlowMethod: TextFlowMethod = TextFlowMethod.TopAndBottom,
+    val textHorzArrange: TextHorzArrange = TextHorzArrange.BothSides,
+    val objectNumberSort: ObjectNumberSort = ObjectNumberSort.Figure,
+    val zOrder: Int = 0,
+    val outterMarginLeft: Int = 0,
+    val outterMarginRight: Int = 0,
+    val outterMarginTop: Int = 0,
+    val outterMarginBottom: Int = 0,
+    val instanceId: Long = Random.nextLong(),
+    val isPreventPageDivide: Boolean = false,
+    val explanation: String? = null
+)
+
+data class LineInfoStyle(
+    val lineEndShape: LineEndShape = LineEndShape.Flat,
+    val startArrowShape: LineArrowShape = LineArrowShape.None,
+    val startArrowSize: LineArrowSize = LineArrowSize.MiddleMiddle,
+    val endArrowShape: LineArrowShape = LineArrowShape.None,
+    val endArrowSize: LineArrowSize = LineArrowSize.MiddleMiddle,
+    val isFillStartArrow: Boolean = true,
+    val isFillEndArrow: Boolean = true,
+    val lineType: LineType = LineType.None,
+    val outlineStyle: OutlineStyle = OutlineStyle.Normal,
+    val thickness: Int = 0,
+    val colorValue: Long = 0,
+)
+
+data class ImageFillStyle(
+    val imageFillType: ImageFillType = ImageFillType.FitSize,
+    val brightness: Byte = 0.toByte(),
+    val contrast: Byte = 0.toByte(),
+    val effect: PictureEffect = PictureEffect.RealPicture,
+)
+
+data class ShadowInfoStyle(
+    val type: ShadowType = ShadowType.None,
+    val colorValue: Long = 0xc4c4c4,
+    val offsetX: Int = 283,
+    val offsetY: Int = 283,
+    val transparnet: Short = 0.toShort()
+)
+
+data class ShapeComponentStyle(
+    val offsetX: Int = 0,
+    val offsetY: Int = 0,
+    val groupingCount: Int = 0,
+    val localFileVersion: Int = 1,
+    val rotateAngle: Int = 0
+)
+
+data class ShapeComponentRectangleStyle(
+    val roundRate: Byte = 0.toByte(),
+    val x1: Int = 0,
+    val y1: Int = 0,
+    val x2: Int = 0,
+    val y2: Int = 0,
+    val x3: Int = 0,
+    val y3: Int = 0,
+    val x4: Int = 0,
+    val y4: Int = 0,
+)
+
+data class ImgStyle(
+    val binDataStyle: BinDataStyle = BinDataStyle(),
+    val ctrlHeaderGsoStyle: CtrlHeaderGsoStyle = CtrlHeaderGsoStyle(),
+    val shapeComponentStyle: ShapeComponentStyle = ShapeComponentStyle(),
+    val lineInfoStyle: LineInfoStyle = LineInfoStyle(),
+    val imgFillStyle: ImageFillStyle = ImageFillStyle(),
+    val shadowInfoStyle: ShadowInfoStyle = ShadowInfoStyle(),
+    val shapeComponentRectangleStyle: ShapeComponentRectangleStyle = ShapeComponentRectangleStyle(),
+    val paragraphStyle: ParagraphStyle = ParagraphStyle()
 )
