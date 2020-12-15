@@ -16,7 +16,7 @@ class PaperSizeKtTest : FunSpec({
         hwpFile = readHwp(samplePath)
     }
 
-    test("hwp의 종이 사이즈를 수정할 수 있다.").config(enabled = false) {
+    test("hwp의 종이 사이즈를 수정할 수 있다.") {
         val path = "sample/3-size-sample.hwp"
         hwpFile.createHwp().hwp {
             body {
