@@ -11,7 +11,6 @@ import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 import kr.dogfoot.hwplib.`object`.docinfo.BorderFill
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
 import java.awt.image.BufferedImage
-import java.lang.RuntimeException
 
 open class TABLE(
     override val consumer: HwpTagConsumer<*>,
@@ -42,8 +41,7 @@ fun BODY.table(
         rowSize = rowSize,
         colSize = colSize,
         section = consumer.currentSection,
-        ctrlHeaderStyle = tableStyle.ctrlHeaderStyle,
-        tableRecordStyle = tableStyle.tableRecordStyle
+        tableStyle = tableStyle
     )
     TABLE(consumer = consumer, builder = builder).visit(block)
 }
@@ -59,28 +57,33 @@ fun SECTION.table(
         rowSize = rowSize,
         colSize = colSize,
         section = consumer.currentSection,
-        ctrlHeaderStyle = tableStyle.ctrlHeaderStyle,
-        tableRecordStyle = tableStyle.tableRecordStyle
+        tableStyle = tableStyle
     )
     TABLE(consumer = consumer, builder = builder).visit(block)
 }
 
 class TableBuilder(
     override val hwpFile: HWPFile,
+    private val tableStyle: TableStyle,
     val section: Section,
     val rowSize: Int,
-    val colSize: Int,
-    var ctrlHeaderStyle: CtrlHeaderStyle,
-    var tableRecordStyle: TableRecordStyle
+    val colSize: Int
 ) : HwpTagBuilder {
     lateinit var control: ControlTable
+
+    private val ctrlHeaderStyle: CtrlHeaderStyle
+        get() = tableStyle.ctrlHeaderStyle
+    private val tableRecordStyle: TableRecordStyle
+        get() = tableStyle.tableRecordStyle
+    private val paragraphStyle: ParagraphStyle
+        get() = tableStyle.paragraphStyle
 
     override fun build() {
         val paragraph = runCatching { section.getParagraph(0) }.getOrElse {
             section.addNewParagraph().apply {
                 setParaHeader(this)
                 setParaText(this, "")
-                setParaCharShape(this)
+                setParaCharShape(hwpFile, this, paragraphStyle)
                 setParaLineSeg(this)
             }
         }
@@ -239,9 +242,7 @@ fun TR.td(
         rowTag = row,
         row = position,
         col = countCurrentCol(),
-        borderFillStyle = tdStyle.borderFileStyle,
-        patternFillStyle = tdStyle.patternFillStyle,
-        listHeaderStyle = tdStyle.listHeaderStyle
+        tdStyle = tdStyle
     )
     TD(consumer = consumer, builder = builder).visit(block)
 }
@@ -264,15 +265,17 @@ class TdBuilder(
     val rowTag: Row,
     val row: Int,
     val col: Int,
-    var borderFillStyle: BorderFillStyle = BorderFillStyle(
-        leftBorderType = BorderType.Solid,
-        rightBorderType = BorderType.Solid,
-        topBorderType = BorderType.Solid,
-        bottomBorderType = BorderType.Solid,
-    ),
-    var patternFillStyle: PatternFillStyle = PatternFillStyle(),
-    var listHeaderStyle: ListHeaderStyle = ListHeaderStyle()
+    val tdStyle: TdStyle
 ) : HwpTagBuilder {
+
+    private val borderFillStyle: BorderFillStyle
+        get() = tdStyle.borderFileStyle
+    private val patternFillStyle: PatternFillStyle
+        get() = tdStyle.patternFillStyle
+    private val listHeaderStyle: ListHeaderStyle
+        get() = tdStyle.listHeaderStyle
+    private val paragraphStyle: ParagraphStyle
+        get() = tdStyle.paragraphStyle
 
     lateinit var cell: Cell
     lateinit var bf: BorderFill
@@ -361,7 +364,8 @@ class TdBuilder(
         val p: Paragraph = cell.paragraphList.addNewParagraph()
         setParaHeader(p)
         setParaText(p, text)
-        setParaCharShape(p)
+        setParaCharShape(hwpFile, p, paragraphStyle)
         setParaLineSeg(p)
     }
 }
+

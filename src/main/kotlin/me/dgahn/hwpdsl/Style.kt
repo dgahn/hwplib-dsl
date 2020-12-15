@@ -18,6 +18,10 @@ import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.SlashDiagonalShape
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.ImageFillType
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.fillinfo.PatternType
+import kr.dogfoot.hwplib.`object`.docinfo.charshape.EmphasisSort
+import kr.dogfoot.hwplib.`object`.docinfo.charshape.OutterLineSort
+import kr.dogfoot.hwplib.`object`.docinfo.charshape.ShadowSort
+import kr.dogfoot.hwplib.`object`.docinfo.charshape.UnderLineSort
 
 data class CtrlHeaderStyle(
     val isLikeWord: Boolean = true,
@@ -57,7 +61,8 @@ data class TableRecordStyle(
 
 data class TableStyle(
     val ctrlHeaderStyle: CtrlHeaderStyle = CtrlHeaderStyle(),
-    val tableRecordStyle: TableRecordStyle = TableRecordStyle()
+    val tableRecordStyle: TableRecordStyle = TableRecordStyle(),
+    val paragraphStyle: ParagraphStyle = ParagraphStyle()
 )
 
 data class BorderFillStyle(
@@ -113,5 +118,42 @@ data class ListHeaderStyle(
 data class TdStyle(
     val borderFileStyle: BorderFillStyle = BorderFillStyle(),
     val patternFillStyle: PatternFillStyle = PatternFillStyle(),
-    val listHeaderStyle: ListHeaderStyle = ListHeaderStyle()
+    val listHeaderStyle: ListHeaderStyle = ListHeaderStyle(),
+    val paragraphStyle: ParagraphStyle = ParagraphStyle()
+)
+
+data class ParagraphStyle(
+    val paragraphStartPos: Int = 0,
+    val boldStartPos: Int = 0,
+    val boldEndPos: Int = 0,
+    val ratios: Short = 100.toShort(),
+    val charSpaces: Byte = 0.toByte(),
+    val relativeSizes: Short = 100.toShort(),
+    val charOffsets: Byte = 0.toByte(),
+    val baseSize: Int = ptToLineHeight(11.0),
+    val isItalic: Boolean = false,
+    val isBold: Boolean = false,
+    val underLineSort: UnderLineSort = UnderLineSort.None,
+    val outterLineSort: OutterLineSort = OutterLineSort.None,
+    val shadowSort: ShadowSort = ShadowSort.None,
+    val isEmboss: Boolean = false,
+    val isEngrave: Boolean = false,
+    val isSuperScript: Boolean = false,
+    val isSubScript: Boolean = false,
+    val isStrikeLine: Boolean = false,
+    val emphasisSort: EmphasisSort = EmphasisSort.None,
+    val isUsingSpaceAppropriateForFont: Boolean = false,
+    val strikeLineShape: BorderType = BorderType.None,
+    val isKerning: Boolean = false,
+    val shadowGap1: Byte = 0.toByte(),
+    val shadowGap2: Byte = 0.toByte(),
+    val charColorValue: Long = 0x00000000,
+    val underLineColorValue: Long = 0x00000000,
+    val shadeColorValue: Long = -1,
+    val shadowColorValue: Long = 0x00b2b2b2,
+    val borderFillId: Int = 0,
+    val fontName: String = "바탕",
+    val hasBaseFont: Boolean = false,
+    val hasFontInfo: Boolean = false,
+    val hasSubstituteFont: Boolean = false
 )

@@ -16,6 +16,7 @@ interface HwpTagConsumer<O : HWPFile> : TagConsumer<O> {
 class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O> {
 
     override var currentSection: Section = hwpFile.bodyText.sectionList.first()
+    var paragraphStyle: ParagraphStyle = ParagraphStyle()
 
     override fun onTagStart(tag: Tag) {
         tag.builder.build()
@@ -33,7 +34,7 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O>
         currentSection.addNewParagraph().apply {
             setParaHeader(this)
             setParaText(this, content.toString())
-            setParaCharShape(this)
+            setParaCharShape(hwpFile, this, paragraphStyle)
             setParaLineSeg(this)
         }
     }
