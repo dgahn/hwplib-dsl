@@ -10,6 +10,7 @@ import kr.dogfoot.hwplib.`object`.bodytext.control.table.Row
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 import kr.dogfoot.hwplib.`object`.docinfo.BorderFill
 import kr.dogfoot.hwplib.`object`.docinfo.borderfill.BorderType
+import kr.dogfoot.hwplib.tool.TableCellMerger
 import java.awt.image.BufferedImage
 
 open class TABLE(
@@ -368,4 +369,13 @@ class TdBuilder(
         setParaLineSeg(p)
     }
 }
+
+fun TABLE.mergeCell(
+    startRow: Int, // 시작 행
+    startCol: Int, // 시작 열
+    rowSpan: Int,  // 시작 행으로부터 몇개의 행을 합칠지 지정
+    colSpan: Int   // 시작 열로부터 몇개의 열을 합치지 지정
+) =
+    TableCellMerger.mergeCell(control, startRow, startCol, rowSpan, colSpan)
+
 

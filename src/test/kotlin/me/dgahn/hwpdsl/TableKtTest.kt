@@ -48,6 +48,52 @@ class TableKtTest : FunSpec({
         }.build(path)
     }
 
+    test("hwp에 테이블을 병합할 수 있다.") {
+        val path = "sample/5-table-sample-cell-merge.hwp"
+        hwpFile.createHwp().hwp {
+            body {
+                section {
+                    table(rowSize = 3, colSize = 3) {
+                        tr {
+                            td {
+                                +"이건 위 쪽"
+                            }
+                            td {
+                                +"이건 위 쪽"
+                            }
+                            td {
+                                +"이건 위 쪽"
+                            }
+                        }
+                        tr {
+                            td {
+                                +"이건 중간"
+                            }
+                            td {
+                                +"이건 중간"
+                            }
+                            td {
+                                +"이건 중간"
+                            }
+                        }
+                        tr {
+                            td {
+                                +"이건 아래 쪽"
+                            }
+                            td {
+                                +"이건 아래 쪽"
+                            }
+                            td {
+                                +"이건 아래 쪽"
+                            }
+                        }
+                        mergeCell(1, 1, 2, 2)
+                    }
+                }
+            }
+        }.build(path)
+    }
+
     test("row 사이즈를 초과하면 예외가 발생한다.") {
         val path = "sample/5-table-sample.hwp"
         shouldThrow<RuntimeException> {
