@@ -130,7 +130,7 @@ data class ParagraphStyle(
     val charSpaces: Byte = 0.toByte(),
     val relativeSizes: Short = 100.toShort(),
     val charOffsets: Byte = 0.toByte(),
-    val baseSize: Int = ptToLineHeight(11.0),
+    val baseSize: Double = 11.0,
     val isItalic: Boolean = false,
     val isBold: Boolean = false,
     val underLineSort: UnderLineSort = UnderLineSort.None,

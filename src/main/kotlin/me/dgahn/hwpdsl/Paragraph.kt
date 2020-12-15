@@ -119,7 +119,7 @@ private fun createCharShape(hwpFile: HWPFile, faceNameId: Int, paragraphStyle: P
     cs.charSpaces.setForAll(paragraphStyle.charSpaces)
     cs.relativeSizes.setForAll(paragraphStyle.relativeSizes)
     cs.charOffsets.setForAll(paragraphStyle.charOffsets)
-    cs.baseSize = paragraphStyle.baseSize
+    cs.baseSize = ptToLineHeight(paragraphStyle.baseSize)
     cs.property.isItalic = paragraphStyle.isItalic
     cs.property.isBold = paragraphStyle.isBold
     cs.property.underLineSort = paragraphStyle.underLineSort

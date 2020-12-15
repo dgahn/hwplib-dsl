@@ -1,16 +1,27 @@
 package me.dgahn.example.title
 
 import me.dgahn.hwpdsl.SECTION
+import me.dgahn.hwpdsl.mergeCell
 import me.dgahn.hwpdsl.table
 import me.dgahn.hwpdsl.td
 import me.dgahn.hwpdsl.tr
 
 fun SECTION.title(data: TitleData) {
-    table(rowSize = 1, colSize = 1, tableStyle = titleNameTableStyle) {
+    table(rowSize = 2, colSize = 2, tableStyle = titleNameTableStyle) {
         tr {
             td(tdStyle = titleNameTdStyle) {
                 + data.title
             }
+            td(tdStyle = timeTdStyle) {
+                + "이건 시간 : ${data.createdTime.toFormatString()}"
+            }
         }
+        tr {
+            td(tdStyle = titleNameTdStyle)
+            td(tdStyle = timeTdStyle) {
+                + "요것도 시간 : ${data.createdTime.toFormatString()}"
+            }
+        }
+        mergeCell(startRow = 0, startCol = 0, rowSpan = 2, colSpan = 1)
     }
 }

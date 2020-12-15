@@ -288,7 +288,11 @@ class TdBuilder(
         this.cell = cell
     }
 
-    override fun completed() = Unit
+    override fun completed() {
+        if(cell.paragraphList.count() == 0) {
+            setParagraphForCell("", cell)
+        }
+    }
 
     private fun getBorderFillIDForCell(
         hwpFile: HWPFile

@@ -8,7 +8,6 @@ import kr.dogfoot.hwplib.writer.HWPWriter
 interface HwpTagConsumer<O : HWPFile> : TagConsumer<O> {
     val hwpFile: HWPFile
     var currentSection: Section
-//    var isFirstSection: Boolean
 
     fun initTagProperty(tag: Tag)
 }
