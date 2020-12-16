@@ -2,6 +2,7 @@ package me.dgahn.example
 
 import io.kotest.core.spec.style.FunSpec
 import kr.dogfoot.hwplib.`object`.HWPFile
+import me.dgahn.fixture.detailData
 import me.dgahn.fixture.overviewData
 import me.dgahn.fixture.summaryData
 import me.dgahn.fixture.titleData
@@ -27,6 +28,7 @@ class HwpExampleBuilderTest : FunSpec({
             .titleData(titleData)
             .overviewData(overviewData)
             .summaryData(summaryData)
+            .detailData(detailData)
             .path(path)
             .build()
     }

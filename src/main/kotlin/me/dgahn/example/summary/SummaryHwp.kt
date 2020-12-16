@@ -30,7 +30,7 @@ fun SECTION.summary(sampleData: SummaryData) {
     }
 
     // #
-    sampleData.summary.forEach {
+    sampleData.summaryList.forEach {
         table(rowSize = 1, colSize = 1, tableStyle = getFirstThTableStyle(it.triple.size)) {
             tr {
                 td(tdStyle = getFirstTdTableStyle(it.triple.size)) {

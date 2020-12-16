@@ -55,10 +55,10 @@ data class CtrlHeaderStyle(
     val width: Double = 100.0,
     val height: Double = 60.0,
     val zOrder: Int = 1,
-    val outterMarginLeft: Int = 0,
-    val outterMarginRight: Int = 0,
-    val outterMarginTop: Int = 0,
-    val outterMarginBottom: Int = 0,
+    val outterMarginLeft: Double = 0.0,
+    val outterMarginRight: Double = 0.0,
+    val outterMarginTop: Double = 0.0,
+    val outterMarginBottom: Double = 0.0,
 )
 
 data class TableRecordStyle(
@@ -169,7 +169,8 @@ data class ParagraphStyle(
     val paragraphAlignment: Alignment = Alignment.Left,
     val lineSpace: Int = 100,
     val leftMargin: Double = 0.0,
-    val rightMargin: Double = 0.0
+    val rightMargin: Double = 0.0,
+    val isDividePage: Boolean = false
 ) {
     val lineSpace2: Long
         get() = lineSpace.toLong()

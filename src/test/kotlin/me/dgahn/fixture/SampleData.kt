@@ -1,5 +1,7 @@
 package me.dgahn.fixture
 
+import me.dgahn.example.detail.Detail
+import me.dgahn.example.detail.DetailData
 import me.dgahn.example.overview.OverviewData
 import me.dgahn.example.summary.Summary
 import me.dgahn.example.summary.SummaryData
@@ -15,7 +17,7 @@ val overviewData = OverviewData(
 )
 
 val summaryData = SummaryData(
-    summary = listOf(
+    summaryList = listOf(
         Summary(
             index = 1,
             name = "사진1",
@@ -49,6 +51,65 @@ val summaryData = SummaryData(
                 Triple(first = ZonedDateTime.now(), second = "이름3", third = Random.nextInt(200))
             ),
             description = "설명이다3. 설명3"
+        )
+    )
+)
+
+val detailData = DetailData(
+    detailList = listOf(
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값1",
+            secondValue = "두 번째 값1",
+            thirdValue = "세 번째 값1"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값2",
+            secondValue = "두 번째 값2",
+            thirdValue = "세 번째 값2"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값3",
+            secondValue = "두 번째 값3",
+            thirdValue = "세 번째 값3"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값4",
+            secondValue = "두 번째 값4",
+            thirdValue = "세 번째 값4"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값5",
+            secondValue = "두 번째 값5",
+            thirdValue = "세 번째 값5"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값6",
+            secondValue = "두 번째 값6",
+            thirdValue = "세 번째 값6"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값7",
+            secondValue = "두 번째 값7",
+            thirdValue = "세 번째 값7"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값8",
+            secondValue = "두 번째 값8",
+            thirdValue = "세 번째 값8"
+        ),
+        Detail(
+            imgSrc = ImageIO.read(imgFile),
+            firstValue = "첫 번째 값9",
+            secondValue = "두 번째 값9",
+            thirdValue = "세 번째 값9"
         )
     )
 )

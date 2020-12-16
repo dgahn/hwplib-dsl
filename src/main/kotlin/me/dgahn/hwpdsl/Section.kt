@@ -7,9 +7,17 @@ open class SECTION(
     override val builder: SectionBuilder
 ) : Tag
 
-fun BODY.section(block: SECTION.() -> Unit = {}) {
+fun BODY.section(isNewPage: Boolean = false, block: SECTION.() -> Unit = {}) {
     val bodyText = consumer.hwpFile.bodyText
     consumer.currentSection = bodyText.addNewSection()
+
+    if(isNewPage) {
+        consumer.currentSection.addNewParagraph().apply {
+            setParagraph(hwpFile = consumer.hwpFile, content = "", paragraphStyle = ParagraphStyle(
+                isDividePage = true
+            ))
+        }
+    }
 
     SECTION(
         consumer = consumer,

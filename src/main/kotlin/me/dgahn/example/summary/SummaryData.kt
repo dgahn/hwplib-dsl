@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat
 import java.time.ZonedDateTime
 
 data class SummaryData (
-    val summary: List<Summary>
+    val summaryList: List<Summary>
 )
 
 data class Summary(

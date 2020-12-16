@@ -121,10 +121,10 @@ class TableBuilder(
         ctrlHeader.width = mmToHwp(ctrlHeaderStyle.width)
         ctrlHeader.height = mmToHwp(ctrlHeaderStyle.height)
         ctrlHeader.setzOrder(ctrlHeaderStyle.zOrder)
-        ctrlHeader.outterMarginLeft = ctrlHeaderStyle.outterMarginLeft
-        ctrlHeader.outterMarginRight = ctrlHeaderStyle.outterMarginRight
-        ctrlHeader.outterMarginTop = ctrlHeaderStyle.outterMarginTop
-        ctrlHeader.outterMarginBottom = ctrlHeaderStyle.outterMarginBottom
+        ctrlHeader.outterMarginLeft = mmToHwp(ctrlHeaderStyle.outterMarginLeft).toInt()
+        ctrlHeader.outterMarginRight = mmToHwp(ctrlHeaderStyle.outterMarginRight).toInt()
+        ctrlHeader.outterMarginTop = mmToHwp(ctrlHeaderStyle.outterMarginTop).toInt()
+        ctrlHeader.outterMarginBottom = mmToHwp(ctrlHeaderStyle.outterMarginBottom).toInt()
 
         val tableRecord = controlTable.table
         tableRecord.property.divideAtPageBoundary = tableRecordStyle.divideAtPageBoundary
