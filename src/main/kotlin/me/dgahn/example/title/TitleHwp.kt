@@ -12,13 +12,13 @@ fun SECTION.title(data: TitleData) {
             td(tdStyle = titleNameTdStyle) {
                 + data.title
             }
-            td(tdStyle = timeTdStyle) {
+            td(tdStyle = firstTimeTdStyle) {
                 + "이건 시간 : ${data.createdTime.toFormatString()}"
             }
         }
         tr {
             td(tdStyle = titleNameTdStyle)
-            td(tdStyle = timeTdStyle) {
+            td(tdStyle = secondTimeTdStyle) {
                 + "요것도 시간 : ${data.createdTime.toFormatString()}"
             }
         }

@@ -167,7 +167,9 @@ data class ParagraphStyle(
     val hasFontInfo: Boolean = false,
     val hasSubstituteFont: Boolean = false,
     val paragraphAlignment: Alignment = Alignment.Left,
-    val lineSpace: Int = 100
+    val lineSpace: Int = 100,
+    val leftMargin: Double = 0.0,
+    val rightMargin: Double = 0.0
 ) {
     val lineSpace2: Long
         get() = lineSpace.toLong()

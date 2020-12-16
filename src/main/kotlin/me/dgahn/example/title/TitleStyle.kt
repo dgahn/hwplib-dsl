@@ -1,5 +1,6 @@
 package me.dgahn.example.title
 
+import kr.dogfoot.hwplib.`object`.bodytext.control.gso.textbox.TextVerticalAlignment
 import kr.dogfoot.hwplib.`object`.docinfo.numbering.ParagraphAlignment
 import kr.dogfoot.hwplib.`object`.docinfo.parashape.Alignment
 import me.dgahn.hwpdsl.BorderFillStyle
@@ -19,6 +20,7 @@ private const val charColorValue: Long = 0x00FFFFFF
 private const val tdHeight: Double = 15.0
 private const val tableHeight: Double = tdHeight * 2
 private const val titleFontSize: Double = 30.0
+private const val margin: Double = 12.0
 
 internal val titleNameTableStyle = TableStyle(
     ctrlHeaderStyle = CtrlHeaderStyle(
@@ -41,21 +43,41 @@ internal val titleNameTdStyle = TdStyle(
         paragraphAlignment = Alignment.Left,
         charColorValue = charColorValue,
         baseSize = titleFontSize,
-        isBold = true
+        isBold = true,
+        leftMargin = margin
     )
 )
 
-internal val timeTdStyle = TdStyle(
+internal val firstTimeTdStyle = TdStyle(
     borderFileStyle = BorderFillStyle(),
     patternFillStyle = PatternFillStyle(
         backColorValue = backColorValue
     ),
     listHeaderStyle = ListHeaderStyle(
         width = timeWidth,
-        height = tdHeight
+        height = tdHeight,
+        textVerticalAlignment = TextVerticalAlignment.Bottom
     ),
     paragraphStyle = ParagraphStyle(
         charColorValue = charColorValue,
-        paragraphAlignment = Alignment.Right
+        paragraphAlignment = Alignment.Right,
+        rightMargin = margin
+    )
+)
+
+internal val secondTimeTdStyle = TdStyle(
+    borderFileStyle = BorderFillStyle(),
+    patternFillStyle = PatternFillStyle(
+        backColorValue = backColorValue
+    ),
+    listHeaderStyle = ListHeaderStyle(
+        width = timeWidth,
+        height = tdHeight,
+        textVerticalAlignment = TextVerticalAlignment.Top
+    ),
+    paragraphStyle = ParagraphStyle(
+        charColorValue = charColorValue,
+        paragraphAlignment = Alignment.Right,
+        rightMargin = margin
     )
 )
