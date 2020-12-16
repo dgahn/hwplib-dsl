@@ -166,8 +166,12 @@ data class ParagraphStyle(
     val hasBaseFont: Boolean = false,
     val hasFontInfo: Boolean = false,
     val hasSubstituteFont: Boolean = false,
-    val paragraphAlignment: Alignment = Alignment.Left
-)
+    val paragraphAlignment: Alignment = Alignment.Left,
+    val lineSpace: Int = 100
+) {
+    val lineSpace2: Long
+        get() = lineSpace.toLong()
+}
 
 data class BinDataStyle(
     val type: BinDataType = BinDataType.Embedding,

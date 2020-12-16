@@ -16,14 +16,14 @@ fun Paragraph.setParagraph(hwpFile: HWPFile, content: String, paragraphStyle: Pa
     val paraShapeId = hwpFile.docInfo.paraShapeList.size - 1 // ParaShape의 ID를 구함.
     setParaSort(paraShape, paragraphStyle) // 이상 무
     setParaCharShape(hwpFile, this, paragraphStyle)
-    setParaHeader(paraShapeId, this)
+    setParaHeader(paraShapeId, this, hwpFile)
     setParaText(this, content)
     setParaLineSeg(this)
 }
 
-fun setParaHeader(paraShapeId: Int, p: Paragraph) {
+fun setParaHeader(paraShapeId: Int, p: Paragraph, hwpFile: HWPFile) {
     val ph: ParaHeader = p.header
-    ph.isLastInList = false
+    ph.isLastInList = true
     ph.paraShapeId = paraShapeId
     // 셀의 스타일을이미 만들어진 스타일으로 사용함
     ph.styleId = 1.toShort()
@@ -34,7 +34,7 @@ fun setParaHeader(paraShapeId: Int, p: Paragraph) {
     ph.charShapeCount = 1
     ph.rangeTagCount = 0
     ph.lineAlignCount = 1
-    ph.instanceID = 0
+    ph.instanceID = (hwpFile.bodyText.sectionList.size - 1).toLong()
     ph.isMergedByTrack = 0
 }
 
@@ -149,7 +149,8 @@ private fun setParaCharShape(hwpFile: HWPFile, p: Paragraph, paragraphStyle: Par
 
 fun setParaSort(paraShape: ParaShape, paragraphStyle: ParagraphStyle) {
     paraShape.property1.alignment = paragraphStyle.paragraphAlignment
-//    paraShape.indent = paragraphStyle.indent
+    paraShape.lineSpace = paragraphStyle.lineSpace
+    paraShape.lineSpace2 = paragraphStyle.lineSpace2
 }
 
 fun ptToLineHeight(pt: Double): Int {
