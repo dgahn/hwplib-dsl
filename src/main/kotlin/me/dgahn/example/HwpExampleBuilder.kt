@@ -3,6 +3,8 @@ package me.dgahn.example
 import kr.dogfoot.hwplib.`object`.HWPFile
 import me.dgahn.example.overview.OverviewData
 import me.dgahn.example.overview.overview
+import me.dgahn.example.summary.SummaryData
+import me.dgahn.example.summary.summary
 import me.dgahn.example.title.TitleData
 import me.dgahn.example.title.title
 import me.dgahn.hwpdsl.PaperSize
@@ -18,6 +20,7 @@ class HwpExampleBuilder {
     lateinit var hwpFile: HWPFile
     lateinit var titleData: TitleData
     lateinit var overviewData: OverviewData
+    lateinit var summaryData: SummaryData
     lateinit var path: String
 
     fun hwpFile(hwpFile: HWPFile): HwpExampleBuilder {
@@ -35,6 +38,11 @@ class HwpExampleBuilder {
         return this
     }
 
+    fun summaryData(summaryData: SummaryData): HwpExampleBuilder {
+        this.summaryData = summaryData
+        return this
+    }
+
     fun path(path: String): HwpExampleBuilder {
         this.path = path
         return this
@@ -46,6 +54,7 @@ class HwpExampleBuilder {
                 section {
                     title(titleData)
                     overview(overviewData)
+                    summary(summaryData)
                 }
             }
         }.paperSize(paperSize)

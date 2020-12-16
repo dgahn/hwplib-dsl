@@ -55,10 +55,10 @@ data class CtrlHeaderStyle(
     val width: Double = 100.0,
     val height: Double = 60.0,
     val zOrder: Int = 1,
-    val outterMarginLeft: Int = 10,
-    val outterMarginRight: Int = 10,
-    val outterMarginTop: Int = 100,
-    val outterMarginBottom: Int = 100,
+    val outterMarginLeft: Int = 0,
+    val outterMarginRight: Int = 0,
+    val outterMarginTop: Int = 0,
+    val outterMarginBottom: Int = 0,
 )
 
 data class TableRecordStyle(

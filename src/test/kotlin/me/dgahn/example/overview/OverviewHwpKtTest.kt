@@ -3,6 +3,7 @@ package me.dgahn.example.overview
 import io.kotest.core.spec.style.FunSpec
 import kr.dogfoot.hwplib.`object`.HWPFile
 import me.dgahn.fixture.imgFile
+import me.dgahn.fixture.overviewData
 import me.dgahn.hwpdsl.PaperSize
 import me.dgahn.hwpdsl.body
 import me.dgahn.hwpdsl.build
@@ -27,14 +28,10 @@ class OverviewHwpKtTest : FunSpec({
 
     test("오버 뷰를 추가할 수 있다.") {
         val path = "sample/9-overview-sample.hwp"
-        val src = ImageIO.read(imgFile)
-        val data = OverviewData(
-            src = src
-        )
         hwpFile.createHwp().hwp {
             body {
                 section {
-                    overview(data)
+                    overview(overviewData)
                 }
             }
         }.paperSize(PaperSize.A4)
