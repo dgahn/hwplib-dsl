@@ -6,13 +6,25 @@ import kr.dogfoot.hwplib.`object`.bodytext.paragraph.header.ParaHeader
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.lineseg.ParaLineSeg
 import kr.dogfoot.hwplib.`object`.bodytext.paragraph.text.ParaText
 import kr.dogfoot.hwplib.`object`.docinfo.FaceName
+import kr.dogfoot.hwplib.`object`.docinfo.ParaShape
 import java.io.UnsupportedEncodingException
 
-fun setParaHeader(p: Paragraph) {
+fun Paragraph.setParagraph(hwpFile: HWPFile, content: String, paragraphStyle: ParagraphStyle) {
+    createCharShape() // ParaCharShape 을 새로 만듬
+    val paraShape = ParaShape() // ParaShape 를 만듬
+    hwpFile.docInfo.paraShapeList.add(paraShape)
+    val paraShapeId = hwpFile.docInfo.paraShapeList.size - 1 // ParaShape의 ID를 구함.
+    setParaSort(paraShape, paragraphStyle) // 이상 무
+    setParaCharShape(hwpFile, this, paragraphStyle)
+    setParaHeader(paraShapeId, this)
+    setParaText(this, content)
+    setParaLineSeg(this)
+}
+
+fun setParaHeader(paraShapeId: Int, p: Paragraph) {
     val ph: ParaHeader = p.header
-    ph.isLastInList = true
-    // 셀의 문단 모양을 이미 만들어진 문단 모양으로 사용함
-    ph.paraShapeId = 1
+    ph.isLastInList = false
+    ph.paraShapeId = paraShapeId
     // 셀의 스타일을이미 만들어진 스타일으로 사용함
     ph.styleId = 1.toShort()
     ph.divideSort.isDivideSection = false
@@ -59,20 +71,7 @@ fun setParaLineSeg(p: Paragraph) {
     lsi.tag.lastSegmentAtLine = true
 }
 
-fun setParaCharShape(hwpFile: HWPFile, p: Paragraph, paragraphStyle: ParagraphStyle) {
-    val paragraphStartPos = paragraphStyle.paragraphStartPos
-    val boldStartPos = paragraphStyle.boldStartPos
-    val boldEndPos = paragraphStyle.boldEndPos
-    p.createCharShape()
-    val pcs = p.charShape
-    val faceNameId = createFaceName(hwpFile, paragraphStyle)
-    pcs.addParaCharShape(paragraphStartPos.toLong(), faceNameId.toLong())
-    pcs.addParaCharShape(boldStartPos.toLong(), createCharShape(hwpFile, faceNameId, paragraphStyle).toLong())
-    pcs.addParaCharShape(boldEndPos.toLong(), createCharShape(hwpFile, faceNameId, paragraphStyle).toLong())
-}
-
 private fun createFaceName(hwpFile: HWPFile, paragraphStyle: ParagraphStyle): Int {
-
     // 한글 부분을 위한 FaceName 객체를 생성한다. (create FaceName Object for hangul part.)
     var fn: FaceName = hwpFile.docInfo.addNewHangulFaceName()
     setFaceNameForBatang(fn, paragraphStyle)
@@ -111,8 +110,11 @@ private fun setFaceNameForBatang(fn: FaceName, paragraphStyle: ParagraphStyle) {
     fn.name = paragraphStyle.fontName
 }
 
-private fun createCharShape(hwpFile: HWPFile, faceNameId: Int, paragraphStyle: ParagraphStyle): Int {
-    val cs = hwpFile.docInfo.addNewCharShape()
+private fun setParaCharShape(hwpFile: HWPFile, p: Paragraph, paragraphStyle: ParagraphStyle) {
+    val paragraphStartPos = paragraphStyle.paragraphStartPos
+    val faceNameId = createFaceName(hwpFile, paragraphStyle)
+    val cs = hwpFile.docInfo.addNewCharShape() // CharShape를 새로 만듬
+    val csId = hwpFile.docInfo.charShapeList.size - 1 // CharShape 의 ID를 구함
     // 바탕 폰트를 위한 FaceName 객체를 링크한다. (link FaceName Object for 'Batang' font.)
     cs.faceNameIds.setForAll(faceNameId)
     cs.ratios.setForAll(paragraphStyle.ratios)
@@ -141,7 +143,13 @@ private fun createCharShape(hwpFile: HWPFile, faceNameId: Int, paragraphStyle: P
     cs.shadeColor.value = paragraphStyle.shadeColorValue
     cs.shadowColor.value = paragraphStyle.shadowColorValue
     cs.borderFillId = paragraphStyle.borderFillId
-    return hwpFile.docInfo.charShapeList.size - 1
+    val pcs = p.charShape
+    pcs.addParaCharShape(paragraphStartPos.toLong(), csId.toLong())
+}
+
+fun setParaSort(paraShape: ParaShape, paragraphStyle: ParagraphStyle) {
+    paraShape.property1.alignment = paragraphStyle.paragraphAlignment
+//    paraShape.indent = paragraphStyle.indent
 }
 
 fun ptToLineHeight(pt: Double): Int {

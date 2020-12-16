@@ -38,6 +38,7 @@ internal val titleNameTdStyle = TdStyle(
         height = tdHeight,
     ),
     paragraphStyle = ParagraphStyle(
+        paragraphAlignment = Alignment.Left,
         charColorValue = charColorValue,
         baseSize = titleFontSize,
         isBold = true

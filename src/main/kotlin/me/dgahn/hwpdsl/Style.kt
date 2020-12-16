@@ -32,7 +32,6 @@ import kr.dogfoot.hwplib.`object`.docinfo.charshape.EmphasisSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.OutterLineSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.ShadowSort
 import kr.dogfoot.hwplib.`object`.docinfo.charshape.UnderLineSort
-import kr.dogfoot.hwplib.`object`.docinfo.numbering.ParagraphAlignment
 import kr.dogfoot.hwplib.`object`.docinfo.parashape.Alignment
 import kotlin.random.Random
 
@@ -260,4 +259,18 @@ data class ImgStyle(
     val shadowInfoStyle: ShadowInfoStyle = ShadowInfoStyle(),
     val shapeComponentRectangleStyle: ShapeComponentRectangleStyle = ShapeComponentRectangleStyle(),
     val paragraphStyle: ParagraphStyle = ParagraphStyle()
+)
+
+data class PaperStyle(
+    val leftMargin: Double = 5.0,
+    val rightMargin: Double = 5.0,
+    val topMargin: Double = 5.0,
+    val bottomMargin: Double = 5.0,
+    val headerMargin: Double = 0.0,
+    val footerMargin: Double = 0.0,
+    val gutterMargin: Double = 0.0,
+    val footNoteShapeDivideLineSort: BorderType = BorderType.None,
+    val footNoteShapeDivideLineThickness: BorderThickness = BorderThickness.MM0_5,
+    val endNoteShapeDivideLineSort: BorderType = BorderType.None,
+    val endNoteShapeDivideLineThickness: BorderThickness = BorderThickness.MM0_5,
 )

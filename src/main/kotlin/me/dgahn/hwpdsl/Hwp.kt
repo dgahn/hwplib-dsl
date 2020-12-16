@@ -11,6 +11,7 @@ class HwpBuilder(
     override val hwpFile: HWPFile
 ) : HwpTagBuilder {
     override fun build() = Unit
+
     override fun completed() {
         if(hwpFile.bodyText.sectionList.size != 1) {
 //            hwpFile.bodyText.sectionList.removeAt(0) paperSize가 동작하려면 지우면 안됨.
