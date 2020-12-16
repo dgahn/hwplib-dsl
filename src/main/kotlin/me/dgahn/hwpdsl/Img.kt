@@ -190,10 +190,10 @@ class ImgBuilder(
         hdr.width = fromMM(shapePosition.width).toLong()
         hdr.height = fromMM(shapePosition.height).toLong()
         hdr.setzOrder(ctrlHeaderGsoStyle.zOrder)
-        hdr.outterMarginLeft = ctrlHeaderGsoStyle.outterMarginLeft
-        hdr.outterMarginRight = ctrlHeaderGsoStyle.outterMarginRight
-        hdr.outterMarginTop = ctrlHeaderGsoStyle.outterMarginTop
-        hdr.outterMarginBottom = ctrlHeaderGsoStyle.outterMarginBottom
+        hdr.outterMarginLeft = fromMM(ctrlHeaderGsoStyle.outterMarginLeft)
+        hdr.outterMarginRight =  fromMM(ctrlHeaderGsoStyle.outterMarginRight)
+        hdr.outterMarginTop =  fromMM(ctrlHeaderGsoStyle.outterMarginTop)
+        hdr.outterMarginBottom =  fromMM(ctrlHeaderGsoStyle.outterMarginBottom)
         hdr.instanceId = ctrlHeaderGsoStyle.instanceId
         hdr.isPreventPageDivide = ctrlHeaderGsoStyle.isPreventPageDivide
         hdr.explanation = ctrlHeaderGsoStyle.explanation
