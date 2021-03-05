@@ -2,6 +2,7 @@ package me.dgahn.hwpdsl
 
 import kr.dogfoot.hwplib.`object`.HWPFile
 import kr.dogfoot.hwplib.`object`.bodytext.Section
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
 import kr.dogfoot.hwplib.reader.HWPReader
 import kr.dogfoot.hwplib.writer.HWPWriter
 
@@ -29,10 +30,14 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O>
         }
     }
 
-    override fun onTagText(content: CharSequence) {
-        currentSection.addNewParagraph().apply {
-            setParagraph(hwpFile = hwpFile, content = content.toString(), paragraphStyle = paragraphStyle)
-        }
+    override fun onTagText(content: CharSequence, paragraph: Paragraph?, paragraphStyle: ParagraphStyle?) {
+        val currentParagraph = paragraph ?: currentSection.addNewParagraph()
+        val currentParagraphStyle = paragraphStyle ?: this.paragraphStyle
+        currentParagraph.setParagraph(
+            hwpFile = hwpFile,
+            content = content.toString(),
+            paragraphStyle = currentParagraphStyle
+        )
     }
 
     override fun onTagEnd(tag: Tag) {
@@ -40,7 +45,6 @@ class HwpStreamBuilder<O : HWPFile>(override val hwpFile: O) : HwpTagConsumer<O>
     }
 
     override fun finalize(): O = hwpFile
-
 
 }
 

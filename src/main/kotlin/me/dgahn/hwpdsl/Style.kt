@@ -8,6 +8,7 @@ import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.TextFlowMethod
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.TextHorzArrange
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.VertRelTo
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.gso.WidthCriterion
+import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.header.HeaderFooterApplyPage
 import kr.dogfoot.hwplib.`object`.bodytext.control.ctrlheader.sectiondefine.TextDirection
 import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineArrowShape
 import kr.dogfoot.hwplib.`object`.bodytext.control.gso.shapecomponent.lineinfo.LineArrowSize
@@ -124,6 +125,7 @@ data class ListHeaderStyle(
     val topMargin: Int = 0,
     val bottomMargin: Int = 0,
     val textWidth: Double = 50.0,
+    val textHeight: Double = 50.0,
     val fieldName: String = ""
 )
 
@@ -280,4 +282,10 @@ data class PaperStyle(
     val footNoteShapeDivideLineThickness: BorderThickness = BorderThickness.MM0_5,
     val endNoteShapeDivideLineSort: BorderType = BorderType.None,
     val endNoteShapeDivideLineThickness: BorderThickness = BorderThickness.MM0_5,
+)
+
+data class HeaderFooterStyle(
+    val listHeaderStyle: ListHeaderStyle = ListHeaderStyle(),
+    val headerFooterApplyPage: HeaderFooterApplyPage =  HeaderFooterApplyPage.BothPage,
+    val paragraphStyle: ParagraphStyle = ParagraphStyle()
 )

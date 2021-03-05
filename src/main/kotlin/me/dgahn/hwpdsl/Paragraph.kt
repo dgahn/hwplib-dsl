@@ -38,6 +38,16 @@ fun setParaHeader(paraShapeId: Int, p: Paragraph, hwpFile: HWPFile, paragraphSty
     ph.isMergedByTrack = 0
 }
 
+/*
+//        val paragraph: Paragraph = header.paragraphList.addNewParagraph()
+//        paragraph.header.paraShapeId = 1
+//        paragraph.header.styleId = 1.toShort()
+//        paragraph.createText()
+//        paragraph.text.addString("머리글 입니다.")
+//        paragraph.createCharShape()
+//        paragraph.charShape.addParaCharShape(0, 2)
+ */
+
 fun setParaText(p: Paragraph, text: String) {
     if (p.text != null) {
         p.deleteText()
@@ -59,7 +69,7 @@ fun setParaLineSeg(p: Paragraph) {
     p.createLineSeg()
     val pls: ParaLineSeg = p.lineSeg
     val lsi = pls.addNewLineSegItem()
-    lsi.textStartPositon = 0
+    lsi.textStartPosition = 0
     lsi.lineVerticalPosition = 0
     lsi.lineHeight = ptToLineHeight(10.0)
     lsi.textPartHeight = ptToLineHeight(10.0)

@@ -68,7 +68,8 @@ class TableBuilder(
     private val tableStyle: TableStyle,
     val section: Section,
     val rowSize: Int,
-    val colSize: Int
+    val colSize: Int,
+    val paragraph: Paragraph? = null
 ) : HwpTagBuilder {
     lateinit var control: ControlTable
 
@@ -80,14 +81,18 @@ class TableBuilder(
         get() = tableStyle.paragraphStyle
 
     override fun build() {
-        val paragraph = runCatching { section.getParagraph(0) }.getOrElse {
+        val currentParagraph = paragraph ?: runCatching { section.getParagraph(0) }.getOrElse {
             section.addNewParagraph().apply {
                 setParagraph(hwpFile = hwpFile, content = "", paragraphStyle = paragraphStyle)
             }
         }
 
-        paragraph.text.addExtendCharForTable()
-        paragraph.addNewControl(ControlType.Table).apply {
+        if (paragraph?.text == null) {
+            paragraph?.createText()
+        }
+        val paragraph = hwpFile.bodyText.sectionList.first().getParagraph(0)
+        currentParagraph.text.addExtendCharForTable()
+        currentParagraph.addNewControl(ControlType.Table).apply {
             control = this as ControlTable
             style(rowSize, colSize, hwpFile, control)
         }
@@ -286,7 +291,7 @@ class TdBuilder(
     }
 
     override fun completed() {
-        if(cell.paragraphList.count() == 0) {
+        if (cell.paragraphList.count() == 0) {
             setParagraphForCell("", cell)
         }
     }

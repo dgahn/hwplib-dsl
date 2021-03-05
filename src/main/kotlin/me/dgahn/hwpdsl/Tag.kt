@@ -1,8 +1,10 @@
 package me.dgahn.hwpdsl
 
+import kr.dogfoot.hwplib.`object`.bodytext.paragraph.Paragraph
+
 interface TagConsumer<out R> {
     fun onTagStart(tag: Tag)
-    fun onTagText(content: CharSequence)
+    fun onTagText(content: CharSequence, paragraph: Paragraph? = null, paragraphStyle: ParagraphStyle? = null)
     fun onTagEnd(tag: Tag)
     fun onTagError(tag: Tag, exception: Throwable): Unit = throw exception
     fun finalize(): R

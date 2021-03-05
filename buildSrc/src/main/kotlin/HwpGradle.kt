@@ -1,5 +1,5 @@
 object HwpVersion {
-    const val hwpLib = "1.0.2"
+    const val hwpLib = "1.0.3"
 }
 
 object HwpLibs {
