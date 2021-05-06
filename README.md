@@ -18,6 +18,40 @@ hwpFile.createHwp().hwp {
 
 #### 표를 만드는 예제
 
+- hwplib-dsl
+
+```kotlin
+val hwpFile = readHwp("sample.hwp")
+val path = "table-sample.hwp"
+hwpFile.createHwp().hwp {
+    body {
+        section {
+            table(rowSize = 2, colSize = 2) {
+                tr {
+                    td {
+                        +"이건 위 쪽"
+                        +"이건 위 쪽"
+                    }
+                    td {
+                        +"이건 위 쪽"
+                        +"이건 위 쪽"
+                    }
+                }
+                tr {
+                    td {
+                        +"이건 아래 쪽"
+                        +"이건 아래 쪽"
+                    }
+                    td {
+                        +"이건 아래 쪽"
+                    }
+                }
+            }
+        }
+    }
+}.build(path)
+```
+
 - 기존 hwplib
 
 ```java
@@ -308,40 +342,6 @@ public class Inserting_Table {
         setParagraphForCell("오른쪽 아래 셀");
     }
 }
-```
-
-- hwplib-dsl
-
-```kotlin
-val hwpFile = readHwp("sample.hwp")
-val path = "table-sample.hwp"
-hwpFile.createHwp().hwp {
-    body {
-        section {
-            table(rowSize = 2, colSize = 2) {
-                tr {
-                    td {
-                        +"이건 위 쪽"
-                        +"이건 위 쪽"
-                    }
-                    td {
-                        +"이건 위 쪽"
-                        +"이건 위 쪽"
-                    }
-                }
-                tr {
-                    td {
-                        +"이건 아래 쪽"
-                        +"이건 아래 쪽"
-                    }
-                    td {
-                        +"이건 아래 쪽"
-                    }
-                }
-            }
-        }
-    }
-}.build(path)
 ```
 
 ### 기본 예제
